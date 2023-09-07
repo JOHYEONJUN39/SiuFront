@@ -1,18 +1,9 @@
-import { Outlet, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import Nav from './components/Layout/Nav'
 import MainPage from './pages/MainPage'
 import SearchPage from './pages/SearchPage'
-
-const Layout = () => {
-  return (
-    <>
-      <Nav />
-
-      <Outlet />
-    </>
-  )
-}
+import WritePage from './pages/WritePage'
+import Layout from './Layout'
 
 function App() {
   return (
@@ -21,6 +12,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<MainPage />} />
           <Route path="search" element={<SearchPage />} />
+          <Route path='write' element={<WritePage />} />
         </Route>
       </Routes>
     </div>

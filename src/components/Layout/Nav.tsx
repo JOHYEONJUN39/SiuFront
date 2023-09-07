@@ -4,6 +4,7 @@ import { styled } from "styled-components"
 
 const Nav = () => {
   const [searchValue, setsearchValue] = useState<string>("");
+  const [headerShow, setheaderShow] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,8 +20,27 @@ const Nav = () => {
     navigate(`/search?query=${e.target.value}`)
   }
 
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+
+    if(currentScrollY > 0) {
+      setheaderShow(true)
+    }
+    else {
+      setheaderShow(false)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll)
+  
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [handleScroll])
+  
   return (
-    <HeaderTop>
+    <Header $handleShow={headerShow}>
       <HeaderInner>
         <HeaderWrapper>
           <HeaderTitle onClick={() => navigate('/')}>Newbiesiuuuu</HeaderTitle>
@@ -30,25 +50,29 @@ const Nav = () => {
             type="text" 
             placeholder="Search" 
           />
+          <button onClick={() => navigate('/write')}>Write</button>
           <HeaderRight>
             <LoginButton>Login</LoginButton>
             <RegistButton>Register</RegistButton>
           </HeaderRight>
         </HeaderWrapper>
       </HeaderInner>
-    </HeaderTop>
+    </Header>
   )
 }
 
 export default Nav
 
-const HeaderTop = styled.header`
+const Header = styled.header<{ $handleShow: boolean }>`
   background-color: #380B61;
   border-bottom: 1px solid #eee;
-  position: fixed;
-  top: 0;
+  margin-bottom: 2rem;
   width: 100%;
-  z-index: 100;
+  ${({ $handleShow }) => $handleShow && `
+    position: fixed;
+    top: 0;
+    z-index: 100;
+  `}
 `
 
 const HeaderInner = styled.div`
@@ -61,7 +85,7 @@ const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 50px;
+  height: 60px;
 `
 
 const HeaderTitle = styled.h1`
