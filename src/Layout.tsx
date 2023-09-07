@@ -18,4 +18,5 @@ export default Layout
 const Container = styled.div`
   width: 1240px;
   margin: 0 auto;
+  margin-top: 80px;
 `

@@ -4,7 +4,6 @@ import { styled } from "styled-components"
 
 const Nav = () => {
   const [searchValue, setsearchValue] = useState<string>("");
-  const [headerShow, setheaderShow] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,28 +18,9 @@ const Nav = () => {
     setsearchValue(e.target.value)
     navigate(`/search?query=${e.target.value}`)
   }
-
-  const handleScroll = () => {
-    const currentScrollY = window.scrollY;
-
-    if(currentScrollY > 0) {
-      setheaderShow(true)
-    }
-    else {
-      setheaderShow(false)
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
-  
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [handleScroll])
   
   return (
-    <Header $handleShow={headerShow}>
+    <Header>
       <HeaderInner>
         <HeaderWrapper>
           <HeaderTitle onClick={() => navigate('/')}>Newbiesiuuuu</HeaderTitle>
@@ -50,7 +30,6 @@ const Nav = () => {
             type="text" 
             placeholder="Search" 
           />
-          <button onClick={() => navigate('/write')}>Write</button>
           <HeaderRight>
             <LoginButton>Login</LoginButton>
             <RegistButton>Register</RegistButton>
@@ -63,16 +42,12 @@ const Nav = () => {
 
 export default Nav
 
-const Header = styled.header<{ $handleShow: boolean }>`
-  background-color: #380B61;
+const Header = styled.header`
+  background-color: #58FAD0;
   border-bottom: 1px solid #eee;
-  margin-bottom: 2rem;
   width: 100%;
-  ${({ $handleShow }) => $handleShow && `
-    position: fixed;
-    top: 0;
-    z-index: 100;
-  `}
+  position: fixed;
+  top: 0;
 `
 
 const HeaderInner = styled.div`
@@ -127,7 +102,12 @@ const LoginButton = styled.div`
   justify-content: center;
   border-radius: 0.5rem;
   margin-right: 1rem;
-  background-color: #A9BCF5;
+  background-color: #fff;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #A9D0F5;
+  }
 `
 const RegistButton = styled.div`
   width: 90px;
@@ -136,5 +116,10 @@ const RegistButton = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 0.5rem;
-  background-color: #848484;
+  background-color: #fff;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #6E6E6E;
+  }
 `
