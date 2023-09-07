@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { styled } from "styled-components"
+import Modal from "../Modal";
 
 const Nav = () => {
   const [searchValue, setsearchValue] = useState<string>("");
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [type, setType] = useState<string>("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,25 +21,39 @@ const Nav = () => {
     setsearchValue(e.target.value)
     navigate(`/search?query=${e.target.value}`)
   }
+
+  const handleModal = (modalType: string) => {
+    setType(modalType)
+    setOpenModal(true)
+  }
   
   return (
-    <Header>
-      <HeaderInner>
-        <HeaderWrapper>
-          <HeaderTitle onClick={() => navigate('/')}>Newbiesiuuuu</HeaderTitle>
-          <HeaderInput
-            value={searchValue}
-            onChange={handleSearch}
-            type="text" 
-            placeholder="Search" 
-          />
-          <HeaderRight>
-            <LoginButton>Login</LoginButton>
-            <RegistButton>Register</RegistButton>
-          </HeaderRight>
-        </HeaderWrapper>
-      </HeaderInner>
-    </Header>
+    <>
+      <Header>
+        <HeaderInner>
+          <HeaderWrapper>
+            <HeaderTitle onClick={() => navigate('/')}>Newbiesiuuuu</HeaderTitle>
+            <HeaderInput
+              value={searchValue}
+              onChange={handleSearch}
+              type="text" 
+              placeholder="Search" 
+            />
+            <HeaderRight>
+              <LoginButton onClick={() => handleModal("login")}>Login</LoginButton>
+              <RegistButton onClick={() => handleModal("register")}>Register</RegistButton>
+            </HeaderRight>
+          </HeaderWrapper>
+        </HeaderInner>
+      </Header>
+
+    {
+      openModal && (
+        <Modal setOpenModal={setOpenModal} type={type} />
+      )
+    }
+
+    </>
   )
 }
 
