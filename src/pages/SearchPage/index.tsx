@@ -4,8 +4,10 @@ import { useEffect } from 'react';
 import { styled } from 'styled-components';
 
 const SearchPage = () => {
+  // 검색어 가져오기
   const query = new URLSearchParams(useLocation().search)
   const searchQuery = query.get('query')
+  // 검색 하고 0.5초 후에 검색 결과 가져오기
   const debounceSearch = useDebounce(searchQuery!, 500)
 
   useEffect(() => {

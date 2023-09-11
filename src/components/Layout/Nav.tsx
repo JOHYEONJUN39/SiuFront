@@ -11,17 +11,20 @@ const Nav = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // 검색창 초기화
   useEffect(() => {
     if(location.pathname !== "/search") {
       setsearchValue("")
     }
   }, [location])
   
+  // 검색 했을 때 검색 페이지로 이동
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setsearchValue(e.target.value)
     navigate(`/search?query=${e.target.value}`)
   }
 
+  // 모달 창 띄우기
   const handleModal = (modalType: string) => {
     setType(modalType)
     setOpenModal(true)
