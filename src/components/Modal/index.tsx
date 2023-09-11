@@ -9,10 +9,13 @@ interface ModalProps {
 }
 
 const Modal = ({setOpenModal, type}: ModalProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  useOutsideClick({ divRef: ref, handler: () => hadleModalClose() });
   const [isOpen, setIsOpen] = useState(true);
 
+  // 모달 외부 클릭 시 모달 닫기
+  const ref = useRef<HTMLDivElement>(null);
+  useOutsideClick({ divRef: ref, handler: () => hadleModalClose() });
+
+  // 모달 닫을 때 애니메이션 효과
   const hadleModalClose = () => {
     setIsOpen(false)
     setTimeout(() => {
