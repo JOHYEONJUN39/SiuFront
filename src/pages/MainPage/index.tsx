@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { styled } from "styled-components"
 import Galleries from "../../components/Gallery/Galleries";
+import TopButton from "../../components/TopButton";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const MainPage = () => {
       <Galleries category="추천" />
       <Galleries category="정치" />
       <Galleries category="영화" />
+      <TopButton />
     </Con>
   )
 }
