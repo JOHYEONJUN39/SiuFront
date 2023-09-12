@@ -1,13 +1,15 @@
 import { styled } from "styled-components"
 
 const GalleryItem = () => {
+  const titleText = "감자가 맛있게 자라려면 어떻게 해야할까? 감자가 맛있게 자라려면 어떻게 해야할까? 감자가 맛있게 자라려면 어떻게 해야할까?";
+  const displayedTitleText = titleText.length > 50 ? `${titleText.substring(0,50)}...` : titleText;
   return (
     <GalleryItems>
       <GalleryItemImageCon>
         <GalleryItemImage src="https://resize.blogsys.jp/c3cd8a2c434824d88dc3a9b1397c7954d3ff3857/crop1/343x343/https://livedoor.blogimg.jp/shibainu_donguri/imgs/a/8/a875be26.png" alt="" />
       </GalleryItemImageCon>
       <GalleryItemTitle>
-        개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행개행
+        {displayedTitleText}
       </GalleryItemTitle>
     </GalleryItems>
   )
