@@ -1,15 +1,14 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import styled from 'styled-components'
 import useOutsideClick from '../../hooks/useOutsideClick';
 import Login from '../Sign';
+import { useDispatch } from 'react-redux';
+import { showClose } from '../../store/modalSlice';
 
-interface ModalProps {
-  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
-  type: string
-}
-
-const Modal = ({setOpenModal, type}: ModalProps) => {
+const Modal = () => {
   const [isOpen, setIsOpen] = useState(true);
+
+  const dispatch = useDispatch();
 
   // 모달 외부 클릭 시 모달 닫기
   const ref = useRef<HTMLDivElement>(null);
@@ -19,7 +18,7 @@ const Modal = ({setOpenModal, type}: ModalProps) => {
   const hadleModalClose = () => {
     setIsOpen(false)
     setTimeout(() => {
-      setOpenModal(false)
+      dispatch(showClose())
     }, 500)
   }
 
@@ -27,7 +26,7 @@ const Modal = ({setOpenModal, type}: ModalProps) => {
     <Container>
       <ModalWrapper>
         <ModalMain $isOpen={isOpen} ref={ref}>
-          <Login type={type} />
+          <Login />
         </ModalMain>
       </ModalWrapper>
     </Container>

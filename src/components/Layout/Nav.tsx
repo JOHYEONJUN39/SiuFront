@@ -2,14 +2,21 @@ import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { styled } from "styled-components"
 import Modal from "../Modal";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { resetUser } from "../../store/userSlice";
+import { useDispatch } from "react-redux";
+import { showOpen } from "../../store/modalSlice";
 
 const Nav = () => {
   const [searchValue, setsearchValue] = useState<string>("");
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const [type, setType] = useState<string>("");
 
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+
+  const setModal = useSelector((state: RootState) => state.modal);
+  const userData = useSelector((state: RootState) => state.user);
 
   // 검색창 초기화
   useEffect(() => {
@@ -26,8 +33,14 @@ const Nav = () => {
 
   // 모달 창 띄우기
   const handleModal = (modalType: string) => {
-    setType(modalType)
-    setOpenModal(true)
+    dispatch(showOpen({
+      modalType
+    }))
+  }
+
+  const handleLogOut = () => {
+    dispatch(resetUser())
+    navigate("/")
   }
   
   return (
@@ -42,17 +55,31 @@ const Nav = () => {
               type="text" 
               placeholder="Search" 
             />
+
             <HeaderRight>
-              <LoginButton onClick={() => handleModal("login")}>Login</LoginButton>
-              <RegistButton onClick={() => handleModal("register")}>Register</RegistButton>
+              {
+                userData.id ? (
+                  <div>
+                    <div>{userData.nickname}</div>
+                    <button onClick={() => handleLogOut()}>로그아웃</button>
+                  </div>
+
+                ) : (
+                  <>
+                    <LoginButton onClick={() => handleModal("login")}>Login</LoginButton>
+                    <RegistButton onClick={() => handleModal("register")}>Register</RegistButton>      
+                  </>
+                )
+              }
             </HeaderRight>
+
           </HeaderWrapper>
         </HeaderInner>
       </Header>
 
     {
-      openModal && (
-        <Modal setOpenModal={setOpenModal} type={type} />
+      setModal.show && (
+        <Modal />
       )
     }
 
