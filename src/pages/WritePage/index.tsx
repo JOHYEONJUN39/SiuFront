@@ -3,6 +3,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
+import { Post } from "../../api/Board/Post";
 
 const WritePage = () => {
   const [title, setTitle] = useState<string>("")
@@ -34,11 +35,13 @@ const WritePage = () => {
 
   const handleWrite = () => {
     const data = {
+      user_id: "hetame",
       title,
-      content: content,
+      article: content,
       tags
     }
-    console.log(data);
+    
+    Post(data)
   }
 
   return (
