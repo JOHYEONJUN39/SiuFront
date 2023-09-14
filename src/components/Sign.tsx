@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import styled from 'styled-components'
+import { register } from '../api/Sign/register'
+import { useLogin } from '../api/Sign/Login'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store'
 
-interface SignProps {
-  type: string
-}
-
-const Sign = ({type}: SignProps) => {
+const Sign = () => {
   const [userId, setUserId] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const [passwordCheck, setPasswordCheck] = useState<string>("")
@@ -20,6 +20,9 @@ const Sign = ({type}: SignProps) => {
     id: "test"
   }
 
+  const type = useSelector((state: RootState) => state.modal.modalType)
+
+  const { login } = useLogin();
   
   // 아이디 유효성 검사
   const handleUserId = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,12 +90,25 @@ const Sign = ({type}: SignProps) => {
   // 제출
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const data = {
-      userId,
-      password,
+
+    if (type === "login") {
+      const data = {
+        id: userId,
+        password,
+      }
+
+      login(data)
     }
-    console.log(data);
-    
+    else if (type === "register") {
+      const data = {
+        id: userId,
+        nickname: userId,
+        password,
+      }
+
+      register(data)
+    }
+   
   }
 
   return (
@@ -147,7 +163,6 @@ const Sign = ({type}: SignProps) => {
             )
           }
         </>
-
       )}
 
       <LoginButton
