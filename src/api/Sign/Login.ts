@@ -17,6 +17,8 @@ export const useLogin = () => {
     
     await api.post('/api/login', data)
     .then((res) => {
+      console.log(res);
+
       dispatch(setUser({
         id: res.data.id,
         nickname: res.data.nickname,
