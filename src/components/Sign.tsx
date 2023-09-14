@@ -4,6 +4,9 @@ import { register } from '../api/Sign/register'
 import { useLogin } from '../api/Sign/Login'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
+import { showOpen } from '../store/modalSlice'
+import { useDispatch } from 'react-redux'
+import { PulseLoader } from 'react-spinners'
 
 const Sign = () => {
   const [userId, setUserId] = useState<string>("")
@@ -12,13 +15,19 @@ const Sign = () => {
 
   const [idDuplicate, setIdDuplicate] = useState<boolean>(false)
 
+  const [loginError, setLoginError] = useState<boolean>(false)
+
   const [userIdError, setUserIdError] = useState<boolean>(false)
   const [passwordError, setPasswordError] = useState<boolean>(false)
   const [passwordCheckError, setPasswordCheckError] = useState<boolean>(false)
 
+  const [loading, setLoading] = useState<boolean>(false)
+
   const data = {
     id: "test"
   }
+
+  const dispatch = useDispatch();
 
   const type = useSelector((state: RootState) => state.modal.modalType)
 
@@ -88,16 +97,26 @@ const Sign = () => {
   }
 
   // 제출
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    if( userId === "" || password === "" ) {
+      setLoginError(true)
+      return;
+    }
 
     if (type === "login") {
       const data = {
         id: userId,
         password,
       }
+      
+      setLoading(true)
+      
+      await login(data)
 
-      login(data)
+      setLoading(false)
+      
     }
     else if (type === "register") {
       const data = {
@@ -108,7 +127,13 @@ const Sign = () => {
 
       register(data)
     }
-   
+  }
+
+  // 로그인, 회원가입 창 전환
+  const handleChange = (type: string) => {
+    dispatch(showOpen({
+      modalType: type
+    }))
   }
 
   return (
@@ -144,6 +169,12 @@ const Sign = () => {
       />
 
       {
+        loginError && (
+          <ErrorText>아이디와 비밀번호를 입력해주세요.</ErrorText>
+        )
+      }
+
+      {
         passwordError && (
           <ErrorText>비밀번호는 4~12자의 영문 대소문자와 숫자로만 입력해주세요.</ErrorText>
         )
@@ -165,11 +196,25 @@ const Sign = () => {
         </>
       )}
 
-      <LoginButton
-        type="submit"
-      >
-        {type === "login" ? "Login" : "Register"}
+      <LoginButton type="submit">
+        {
+          loading ? <PulseLoader color={"#36d7b7"} loading={loading} size={6}/> : type === "login" ? "로그인" : "회원가입"
+        }
       </LoginButton>
+
+      <TextBox>
+        {
+          type === "login" ? "아직 회원이 아니신가요?" : "이미 회원이신가요?"
+        }
+
+        <span 
+          style={{color: "#ccc", marginLeft: "0.5rem", cursor: "pointer"}}
+          onClick={() => {handleChange(type === "login" ? "register" : "login") }}
+        >
+          {type === "login" ? "회원가입" : "로그인"}
+        </span>
+      </TextBox>
+
     </LoginForm>
    </Container> 
   )
@@ -317,4 +362,14 @@ const ErrorText = styled.p`
   color: red;
   font-size: 0.8rem;
   margin-bottom: 1rem;
+`
+
+const TextBox = styled.div`
+  border: none;
+  background-color: transparent;
+  border-radius: 0.2rem;
+  box-sizing: border-box;
+  color: #A4A4A4;
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
 `
