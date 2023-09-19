@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import styled from 'styled-components'
 import useOutsideClick from '../../hooks/useOutsideClick';
-import Login from '../Sign';
+import Login from '../Login/Sign';
 import { useDispatch } from 'react-redux';
 import { showClose } from '../../store/modalSlice';
 
