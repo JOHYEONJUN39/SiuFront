@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import { GetByTag } from '../../api/Board/Post';
+import { GetByTag } from '../../api/Search/Search';
 import Search from '../../components/Search';
 import { RingLoader } from 'react-spinners';
 
