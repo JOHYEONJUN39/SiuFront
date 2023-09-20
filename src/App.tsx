@@ -3,6 +3,7 @@ import './App.css'
 import MainPage from './pages/MainPage'
 import SearchPage from './pages/SearchPage'
 import WritePage from './pages/WritePage'
+import ProfilePage from './pages/ProfilePage'
 import Layout from './Layout'
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
           <Route index element={<MainPage />} />
           <Route path="search" element={<SearchPage />} />
           <Route path='write' element={<WritePage />} />
+          <Route path="Profile" element={<ProfilePage />} />
         </Route>
       </Routes>
     </div>
