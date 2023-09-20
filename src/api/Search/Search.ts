@@ -6,17 +6,23 @@ function replace(url: string) {
 }
 
 export const GetBySearch = async (searchQuery: string) => {
-  axios.get(`/api/search?searchQuery=${searchQuery}`)
-  .then((res) => {
-    console.log(res);
-  })
+  try {
+    const response = await axios.get(`/api/posts/search/${searchQuery}`);
+    return response.data;
+  }
+  catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export const GetByTag = async (tag: string) => {
   const searchValue = replace(tag);
   try {
     const response = await axios.get(`/api/postTags?tag=${searchValue}`);
-    return response.data.posts;
+    console.log(response.data);
+    
+    return response.data;
   } catch (error) {
     console.error(error);
     throw error;
@@ -27,7 +33,7 @@ export const GetTagList = async (value: string) => {
   const searchValue = replace(value);
   try {
     const response = await axios.get(`/api/posts/search/tag/${searchValue}`);
-    return response.data[0].posts;
+    return response.data.tags;
   } catch (error) {
     console.error(error);
     throw error;

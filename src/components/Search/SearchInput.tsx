@@ -3,21 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { GetTagList } from '../../api/Search/Search';
 
-const tagData = [
-  {
-    'id': 1,
-    'name': '#test1'
-  },
-  {
-    'id': 2,
-    'name': '#test2'
-  },
-  {
-    'id': 3,
-    'name': '#asdf'
-  }
-]
-
 const SearchInput = () => {
   const [tagSearch, setTagSearch] = useState<boolean>(false);
   const [tagResult, setTagResult] = useState<string[]>([]);
@@ -26,12 +11,21 @@ const SearchInput = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const query = new URLSearchParams(useLocation().search)
+  const searchQuery = query.get('query')
+
   // 검색창 초기화
   useEffect(() => {
     if(location.pathname !== "/search") {
       setsearchValue("")
     }
   }, [location])
+
+  useEffect(() => {
+    if(searchQuery) {
+      setsearchValue(searchQuery)
+    }
+  }, [searchQuery])
 
   // 검색 했을 때 검색 페이지로 이동
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,14 +52,9 @@ const SearchInput = () => {
 
   // 태그 검색 함수
   const handleTagSearch = async (tag: string) => {
-
     setTagSearch(true)
-
     const data = await GetTagList(tag)
-
-    console.log(data);
-    
-
+    setTagResult(data)
   }
 
   function replace(url: string) {     
