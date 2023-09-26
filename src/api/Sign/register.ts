@@ -7,13 +7,5 @@ type RegisterData = {
 }
 
 export const register = async (data: RegisterData) => {
-  console.log(data);
-
-  api.post('/api/register', data)
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => {
-    console.log(err.response);
-  });
+  return await api.post('/api/register', data)
 }

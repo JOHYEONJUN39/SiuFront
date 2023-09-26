@@ -2,52 +2,56 @@ import { useLocation } from 'react-router-dom';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import { GetByTag } from '../../api/Board/Post';
-import Search from '../../components/Search';
-import { RingLoader } from 'react-spinners';
+import { GetBySearch, GetByTag } from '../../api/Search/Search';
+import Search from '../../components/Search/Search';
+import { useQuery } from 'react-query';
+import Loading from '../../components/Loading/Loading';
 
-type Data = {
-  id: number;
+interface searchResult {
   title: string;
   article: string;
   created_at: string;
+  tag_names?: string[];
 }
 
 const SearchPage = () => {
-  const [searchResult, setSearchResult] = useState<Data[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
+  const [searchResult, setSearchResult] = useState<searchResult[]>([])
 
   // 검색어 가져오기
   const query = new URLSearchParams(useLocation().search)
   const searchQuery = query.get('query')
-  
-  // 검색 하고 0.5초 후에 검색 결과 가져오기
-  const debounceSearch = useDebounce(searchQuery!, 500)
+
+  // 검색 하고 1초 후에 검색 결과 가져오기
+  const debounceSearch = useDebounce(searchQuery!, 1000)
+
+  // 검색 결과 가져오기 useQuery 사용
+  // 후에 useInfiniteQuery로 변경
+  const { data, isLoading } = useQuery(['search', debounceSearch], () => {
+    if (debounceSearch[0] === '#') {
+      return GetByTag(debounceSearch)
+    }
+    return GetBySearch(debounceSearch)
+  }, {
+    enabled: !!debounceSearch,
+    refetchOnWindowFocus: false,
+  })
 
   useEffect(() => {
-    if(debounceSearch) {
-      searchData(debounceSearch)
-    } 
-  }, [debounceSearch])
-
-  const searchData = async (debounceSearch : string) => {
-    if (debounceSearch[0] === '#') {
-      try {
-        setLoading(true)
-        const result = await GetByTag(debounceSearch)
-        setSearchResult(result)
-        setLoading(false)
-      }
-      catch (err) {
-        setLoading(false)
-      }
+    if (data) {
+      console.log(data);
+      
+      setSearchResult(data)
     }
+  }, [data])
+
+  if (isLoading) {
+    return <Loading />
   }
 
   return (
     <Container>
       <Result>
-        {searchQuery}
+        {debounceSearch}
       </Result>
       {
         searchResult.map((result, index) => (
@@ -57,18 +61,10 @@ const SearchPage = () => {
         ))
       }
       {
-        searchResult.length === 0 && loading === false &&
+        searchResult.length === 0 && isLoading === false &&
         <NoResult>
           검색 결과가 없습니다.
         </NoResult>
-      }
-      {
-        loading ? 
-        <RingLoader
-          color={"#36d7b7"}
-          loading={loading}
-          size={100}
-        /> : null
       }
     </Container>
   )
