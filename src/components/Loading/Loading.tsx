@@ -4,7 +4,7 @@ import styled from 'styled-components'
 const Loading = () => {
   return (
     <Container>
-      <RingLoader 
+      <RingLoader
         color={"#36d7b7"}
         loading={true}
         size={100}
@@ -16,8 +16,14 @@ const Loading = () => {
 export default Loading
 
 const Container = styled.div`
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left:0; 
+  z-index: 999;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  margin-top: 8rem;
+  justify-content: center;
 `
