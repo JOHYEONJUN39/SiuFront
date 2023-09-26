@@ -4,19 +4,18 @@ import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { GetBySearch, GetByTag } from '../../api/Search/Search';
 import Search from '../../components/Search/Search';
-import { RingLoader } from 'react-spinners';
+import { useQuery } from 'react-query';
+import Loading from '../../components/Loading';
 
-type Data = {
-  id: number;
+interface searchResult {
   title: string;
   article: string;
   created_at: string;
+  tag_names: string[];
 }
 
 const SearchPage = () => {
-  const [searchResult, setSearchResult] = useState<Data[]>([])
-  const [searchTag, setSearchTag] = useState<string[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
+  const [searchResult, setSearchResult] = useState<searchResult[]>([])
 
   // 검색어 가져오기
   const query = new URLSearchParams(useLocation().search)
@@ -25,38 +24,24 @@ const SearchPage = () => {
   // 검색 하고 0.5초 후에 검색 결과 가져오기
   const debounceSearch = useDebounce(searchQuery!, 500)
 
-  useEffect(() => {
-    if(debounceSearch) {
-      searchData(debounceSearch)
-    } 
-  }, [debounceSearch])
-
-  const searchData = async (debounceSearch : string) => {
+  const { data, isLoading } = useQuery(['search', debounceSearch], () => {
     if (debounceSearch[0] === '#') {
-      try {
-        setSearchResult([])
-        setLoading(true)
-        const result = await GetByTag(debounceSearch)  
-        setSearchResult(result[0].posts)
-        setSearchTag(result[0].relatedTags)
-        setLoading(false)
-      }
-      catch (err) {
-        setLoading(false)
-      }
+      return GetByTag(debounceSearch)
     }
-    else {
-      try {
-        setLoading(true)
-        const result = await GetBySearch(debounceSearch);
-        setSearchResult(result.posts)
-        setLoading(false)
-      }
-      catch (err) {
-        setLoading(false)
-      }
-    }
+    return GetBySearch(debounceSearch)
+  }, {
+    enabled: !!debounceSearch,
+    refetchOnWindowFocus: false,
+  })
 
+  useEffect(() => {
+    if (data) {
+      setSearchResult(data)
+    }
+  }, [data])
+
+  if (isLoading) {
+    return <Loading />
   }
 
   return (
@@ -67,23 +52,15 @@ const SearchPage = () => {
       {
         searchResult.map((result, index) => (
           <div key={index}>
-            <Search data={result} tags={searchTag} />
+            <Search data={result} />
           </div>
         ))
       }
       {
-        searchResult.length === 0 && loading === false &&
+        searchResult.length === 0 &&
         <NoResult>
           검색 결과가 없습니다.
         </NoResult>
-      }
-      {
-        loading ? 
-        <RingLoader
-          color={"#36d7b7"}
-          loading={loading}
-          size={100}
-        /> : null
       }
     </Container>
   )

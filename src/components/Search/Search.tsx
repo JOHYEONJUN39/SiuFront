@@ -3,17 +3,16 @@ import styled from "styled-components"
 
 interface Props {
   data: {
-    id: number;
     title: string;
     article: string;
     created_at: string;
-  },
-  tags: string[]
+    tag_names: string[];
+  }
 }
 
-const Search = ({data, tags}: Props) => {
+const Search = ({data}: Props) => {
 
-  const date = data.created_at.split('T')[0]
+  const date = data.created_at.split("T")[0]
 
   const navigate = useNavigate();
 
@@ -38,7 +37,7 @@ const Search = ({data, tags}: Props) => {
         <Description>{data.article}</Description>
         <TagBox>
           {
-            tags.map((tag, index) => (
+            data.tag_names.map((tag, index) => (
               <Tag 
                 key={index}
                 onClick={() => {

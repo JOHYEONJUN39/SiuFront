@@ -18,15 +18,8 @@ export const GetBySearch = async (searchQuery: string) => {
 
 export const GetByTag = async (tag: string) => {
   const searchValue = replace(tag);
-  try {
-    const response = await axios.get(`/api/postTags?tag=${searchValue}`);
-    console.log(response.data);
-    
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  const res = await axios.get(`/api/postTags?tag=${searchValue}`);
+  return res.data;
 };
 
 export const GetTagList = async (value: string) => {
