@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { GetTagList } from '../../api/Search/Search';
+import { useQuery } from 'react-query';
+import { HashLoader } from 'react-spinners';
 
 const SearchInput = () => {
   const [tagSearch, setTagSearch] = useState<boolean>(false);
   const [tagResult, setTagResult] = useState<string[]>([]);
-  const [searchValue, setsearchValue] = useState<string>("");
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [focus, setFocus] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -14,16 +17,26 @@ const SearchInput = () => {
   const query = new URLSearchParams(useLocation().search)
   const searchQuery = query.get('query')
 
+  // input 창 벗어나면 검색 결과 숨기기
+  const handleBlur = () => {
+    setTimeout(() => {
+      setTagSearch(false)
+      setFocus(false)
+      setTagResult([])
+    }, 100);
+  }
+
   // 검색창 초기화
   useEffect(() => {
     if(location.pathname !== "/search") {
-      setsearchValue("")
+      setSearchValue("")
+      setTagResult([])
     }
   }, [location])
 
   useEffect(() => {
     if(searchQuery) {
-      setsearchValue(searchQuery)
+      setSearchValue(searchQuery)
     }
   }, [searchQuery])
 
@@ -38,25 +51,32 @@ const SearchInput = () => {
 
     // 첫 글자가 #이면 태그 검색
     if (e.target.value.startsWith("#")) {
-      setsearchValue(e.target.value);
-      // 이건 #만 입력했을 때 검색 안되도록
-      if (e.target.value.length > 1) {
-        handleTagSearch(e.target.value);
-      }
+      setSearchValue(e.target.value);
       return;
     }
 
-    setsearchValue(e.target.value)
+    setSearchValue(e.target.value)
     navigate(`/search?query=${e.target.value}`)
   }
 
-  // 태그 검색 함수
-  const handleTagSearch = async (tag: string) => {
-    setTagSearch(true)
-    const data = await GetTagList(tag)
-    setTagResult(data)
-  }
+  // 태그 검색
+  const { isLoading } = useQuery(['tag', searchValue], async () => {
+    setTagResult([]);
+    setTagSearch(true);
+    const data = await GetTagList(searchValue);
+    return data;
+  }, {
+    onSuccess: (data) => {
+      setTagResult(data);
+    },
+    onError: () => {
+      setTagSearch(false);
+    },
+    cacheTime: 0,
+    enabled: searchValue.startsWith("#") && searchValue.length > 1 && focus
+  });
 
+  // url 인코딩
   function replace(url: string) {     
     url= encodeURIComponent(url);    
     return url;
@@ -64,7 +84,7 @@ const SearchInput = () => {
 
   // 태그 클릭 시 검색
   const tagClick = (item: string) => {
-    setsearchValue(item)
+    setSearchValue(item)
     setTagSearch(false)
     const itemResult = replace(item)
     navigate(`/search?query=${itemResult}`)
@@ -76,7 +96,9 @@ const SearchInput = () => {
         value={searchValue}
         onChange={handleSearch}
         type="text" 
-        placeholder="Search" 
+        placeholder="Search"
+        onFocus={() => setFocus(true)}
+        onBlur={handleBlur}
       />
       <TagSearchBox $tagSearch={tagSearch}>
         {
@@ -90,6 +112,7 @@ const SearchInput = () => {
             )
           })
         }
+        <HashLoader color="#36d7b7" loading={isLoading} size={20} cssOverride={{margin: '0 auto'}} />
       </TagSearchBox>
     </InputBox>
   )

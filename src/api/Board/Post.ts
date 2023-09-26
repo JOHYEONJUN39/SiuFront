@@ -8,10 +8,7 @@ type PostData = {
 }
 
 export const Post = async (data: PostData) => {
-  api.post('/api/createPost', data)
-  .then((res) => {
-    console.log(res);
-  })
+  return await api.post('/api/createPost', data)
 }
 
 

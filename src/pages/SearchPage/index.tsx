@@ -5,13 +5,13 @@ import { styled } from 'styled-components';
 import { GetBySearch, GetByTag } from '../../api/Search/Search';
 import Search from '../../components/Search/Search';
 import { useQuery } from 'react-query';
-import Loading from '../../components/Loading';
+import Loading from '../../components/Loading/Loading';
 
 interface searchResult {
   title: string;
   article: string;
   created_at: string;
-  tag_names: string[];
+  tag_names?: string[];
 }
 
 const SearchPage = () => {
@@ -21,9 +21,11 @@ const SearchPage = () => {
   const query = new URLSearchParams(useLocation().search)
   const searchQuery = query.get('query')
 
-  // 검색 하고 0.5초 후에 검색 결과 가져오기
-  const debounceSearch = useDebounce(searchQuery!, 500)
+  // 검색 하고 1초 후에 검색 결과 가져오기
+  const debounceSearch = useDebounce(searchQuery!, 1000)
 
+  // 검색 결과 가져오기 useQuery 사용
+  // 후에 useInfiniteQuery로 변경
   const { data, isLoading } = useQuery(['search', debounceSearch], () => {
     if (debounceSearch[0] === '#') {
       return GetByTag(debounceSearch)
@@ -36,6 +38,8 @@ const SearchPage = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(data);
+      
       setSearchResult(data)
     }
   }, [data])
@@ -47,7 +51,7 @@ const SearchPage = () => {
   return (
     <Container>
       <Result>
-        {searchQuery}
+        {debounceSearch}
       </Result>
       {
         searchResult.map((result, index) => (
@@ -57,7 +61,7 @@ const SearchPage = () => {
         ))
       }
       {
-        searchResult.length === 0 &&
+        searchResult.length === 0 && isLoading === false &&
         <NoResult>
           검색 결과가 없습니다.
         </NoResult>

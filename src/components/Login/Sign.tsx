@@ -4,16 +4,17 @@ import { register } from '../../api/Sign/register'
 import { useLogin } from '../../api/Sign/Login'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { showOpen } from '../../store/modalSlice'
+import { showClose, showOpen } from '../../store/modalSlice'
 import { useDispatch } from 'react-redux'
 import IdInput from './IdInput'
 import PasswordInput from './Password'
 import { PulseLoader } from 'react-spinners'
+import { useMutation } from 'react-query'
+import { setUser } from '../../store/userSlice'
 
 const Sign = () => {
   const [userId, setUserId] = useState<string>("")
   const [password, setPassword] = useState<string>("")
-  const [loading, setLoading] = useState<boolean>(false)
 
   const [loginError, setLoginError] = useState<boolean>(false)
   const [accoutError, setAccountError] = useState<boolean>(false)
@@ -31,14 +32,39 @@ const Sign = () => {
     setPassword(value)
   }
 
+  // 로그인 mutation
+  const loginMutation = useMutation((data: {id: string, password: string}) => login(data), {
+    onSuccess: (res) => {
+      // 성공시 user 정보 저장
+      dispatch(setUser({
+        id: res.data.id,
+        nickname: res.data.nickname,
+        photo: 'https://cdn-icons-png.flaticon.com/512/3985/3985429.png'
+      }));
+
+      dispatch(showClose());
+    },
+    onError: () => {
+      setAccountError(true)
+    }
+  })
+
+  // 회원가입 mutation
+  const registerMutation = useMutation((data: {id: string, nickname: string, password: string}) => register(data), {
+    onSuccess: () => {
+      alert("회원가입이 완료되었습니다.")
+    },
+    onError: () => {
+      setAccountError(true)
+    }
+  })
+
   // 제출
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setLoading(true)
 
     if (userId === "" || password === "") {
       setLoginError(true)
-      setLoading(false)
       return;
     }
 
@@ -48,15 +74,7 @@ const Sign = () => {
         password,
       }
 
-      try {
-        setLoading(true)
-        await login(data)
-        setLoading(false)
-      }
-      catch (err) {
-        setLoading(false)
-        setAccountError(true)
-      }
+      loginMutation.mutate(data)
     }
     else if (type === "register") {
       const data = {
@@ -65,7 +83,7 @@ const Sign = () => {
         password,
       }
 
-      register(data)
+      registerMutation.mutate(data)
     }
   }
 
@@ -98,7 +116,7 @@ const Sign = () => {
 
       <LoginButton type="submit">
         {
-          loading ? <PulseLoader color={"#36d7b7"} loading={loading} size={6}/> : type === "login" ? "로그인" : "회원가입"
+          loginMutation.isLoading || registerMutation.isLoading ? <PulseLoader color={"#36d7b7"} size={6}/> : type === "login" ? "로그인" : "회원가입"
         }
       </LoginButton>
 

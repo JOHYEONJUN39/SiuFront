@@ -6,14 +6,9 @@ function replace(url: string) {
 }
 
 export const GetBySearch = async (searchQuery: string) => {
-  try {
-    const response = await axios.get(`/api/posts/search/${searchQuery}`);
-    return response.data;
-  }
-  catch (error) {
-    console.error(error);
-    throw error;
-  }
+  const response = await axios.get(`/api/posts/search/${searchQuery}`);
+  console.log(response.data);
+  return response.data;
 }
 
 export const GetByTag = async (tag: string) => {

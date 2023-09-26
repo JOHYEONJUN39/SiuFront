@@ -6,7 +6,7 @@ interface Props {
     title: string;
     article: string;
     created_at: string;
-    tag_names: string[];
+    tag_names?: string[];
   }
 }
 
@@ -37,7 +37,7 @@ const Search = ({data}: Props) => {
         <Description>{data.article}</Description>
         <TagBox>
           {
-            data.tag_names.map((tag, index) => (
+            data.tag_names?.map((tag, index) => (
               <Tag 
                 key={index}
                 onClick={() => {
