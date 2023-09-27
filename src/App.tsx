@@ -16,8 +16,8 @@ function App() {
           <Route path="search" element={<SearchPage />} />
           <Route path='write' element={<WritePage />} />
           <Route path="Profile" element={<ProfilePage />} />
-          <Route path="/board/:postId" element={<DetailPage />} />
         </Route>
+        <Route path="/board/:postId" element={<DetailPage />} />
       </Routes>
     </div>
   )
