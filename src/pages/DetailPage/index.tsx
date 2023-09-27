@@ -10,6 +10,8 @@ import { showClose } from '../../store/headerSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import AllLoading from '../../components/Loading/AllLoading';
+import Nav from '../../components/Layout/Nav';
+import { useTimeStamp } from '../../hooks/useTimeStamp';
 
 const DetailPage = () => {
   // 주소창에서 /:postId 부분을 가져온다
@@ -24,6 +26,8 @@ const DetailPage = () => {
   const show = useSelector((state: RootState) => state.header.show);
 
   const bodyRef = useRef<HTMLDivElement>(null);
+
+  const timeAgo = useTimeStamp(data?.post.created_at!);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { capture: true });
@@ -47,74 +51,131 @@ const DetailPage = () => {
   if (isLoading) return <AllLoading />
 
   return (
-    <Container>
-      <Header>
-        <HeaderWrapper>
+    <>
+      <Nav />
+      <Container>
 
-          <HeaderImage />
+        <Header>
+          <HeaderWrapper>
 
-          <Title>
-            <h1>{data?.post.title}</h1>
-          </Title>
-        </HeaderWrapper>
-      </Header>
+            <HeaderImage />
+            <HeaderInner />
+            <Title>
+              <TitleText>{data?.post.title}</TitleText>
+            </Title>
 
-      <Body ref={bodyRef}>
-        <Article
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(data?.post.article || ''),
-          }}
-        />
-      </Body>
+            <BoardInfo>
+              <div className='by'>by</div> <div className='user-name'>{data?.user.nickname}</div> <div className='date'>{timeAgo}</div>
+            </BoardInfo>
 
-    </Container>
+          </HeaderWrapper>
+        </Header>
+
+        <Body ref={bodyRef}>
+          <Article
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(data?.post.article || ''),
+            }}
+          />
+        </Body>
+      </Container>
+    </>
   )
 }
 
 export default DetailPage
 
 const Container = styled.div`
+  min-width: 700px;
   height: 1000vh;
 `
 
 const Header = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: 0;
   width: 100%;
 `
 
 const HeaderWrapper = styled.div`
   position: relative;
+  overflow: hidden;
 `
 
 const HeaderImage = styled.div`
-  background: url("https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg");
-  background-attachment: fixed;
-  height: 400px;
-  width: 100vw;
+  background-image: url("https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg");
+  height: 450px;
+`
+
+const HeaderInner = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 450px;
+  background-color: #000;
+  opacity: 0.3;
 `
 
 const Title = styled.div`
   position: absolute;
-  bottom: 30%;
-  left: 30%;
-  font-size: 36px;
+  width: 700px;
+  bottom: 0;
+  right: 50%;
+  transform: translate(50%, -100px);
+`
+
+const TitleText = styled.div`
+  font-size: 3rem;
+  font-weight: 400;
+  margin: 0;
   color: #fff;
-  font-weight: 500;
+`
+
+const BoardInfo = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: 700px;
+  bottom: 0;
+  right: 50%;
+  color: #fff;
+  transform: translate(50%, -30px);
+
+  & > .by {
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-style: italic;
+    margin-right: 0.5rem;
+  }
+
+  & > .user-name {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  & > .date {
+    color: #aaa;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
 `
 
 const Body = styled.div`
   margin-top: 400px;
-  position: relative; 
+  position: relative;
+  background-color: #fff;
+  height: 100%;
 `
 
 const Article = styled.div`
-  width: 100%;
-  max-width: 768px;
+  width: 700px;
+  margin: 0 auto;
   padding-top: 50px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background: #fff;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
 `
