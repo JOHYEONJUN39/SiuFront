@@ -18,44 +18,44 @@ const PasswordInput = ({onInputChange}: Props) => {
 
   // 비밀번호 유효성 검사
   const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // 로그인 상태면 패스
-    if (type === "login") {
-      onInputChange(e.target.value)
-      setPassword(e.target.value)
-      return;
+    const {
+      target: { name, value },
+    } = e;
+
+    if (name === "password") {
+      onInputChange(value)
+      setPassword(value)
+  
+      // 로그인 상태면 패스
+      if (type === "login") {
+        return;
+      }
+  
+      // 유효성 체크
+      const regExp = /^[a-zA-Z0-9]{4,12}$/
+      if (!value?.match(regExp)) {
+        setPasswordError(true)
+      } else if (passwordCheck.length > 0 && value !== passwordCheck) {
+        setPasswordCheckError(true)
+      } else {
+        setPasswordError(false)
+      }
     }
-
-    if (e.target.value !== passwordCheck && passwordCheck !== "") {
-      setPasswordCheckError(true)
+    else if (name === "passwordCheck") {
+      setPasswordCheck(value)
+  
+      if (value !== password) {
+        setPasswordCheckError(true)
+      } else {
+        setPasswordCheckError(false)
+      }
     }
-
-    // 유효성 체크
-    const regExp = /^[a-zA-Z0-9]{4,12}$/
-    if(regExp.test(e.target.value) || e.target.value === "") {
-      setPasswordError(false)
-    } else {
-      setPasswordError(true)
-    }
-
-    onInputChange(e.target.value)
-    setPassword(e.target.value)
-  }
-
-  // 비밀번호 확인
-  const handlePasswordCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-
-    if (e.target.value === password || e.target.value === "") {
-      setPasswordCheckError(false)
-    } else {
-      setPasswordCheckError(true)
-    }
-
-    setPasswordCheck(e.target.value)
   }
 
   return (
     <>
-      <Password 
+      <Password
+        name="password"
         type="password" 
         placeholder="Password"
         value={password}
@@ -70,11 +70,12 @@ const PasswordInput = ({onInputChange}: Props) => {
 
       {type === "register" && (
         <>
-          <RePassword 
+          <RePassword
+            name='passwordCheck'
             type="password" 
             placeholder="Password Check"
             value={passwordCheck}
-            onChange={handlePasswordCheck}
+            onChange={handlePassword}
           />
           {
             passwordCheckError && (

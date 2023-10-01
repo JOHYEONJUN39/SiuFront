@@ -19,9 +19,10 @@ const IdInput = ({onInputChange}: Props) => {
 
     setIdDuplicate(false)
 
+    setUserId(e.target.value)
+    onInputChange(e.target.value)
+
     if (type === "login") {
-      setUserId(e.target.value)
-      onInputChange(e.target.value)
       return;
     }
 
@@ -31,9 +32,6 @@ const IdInput = ({onInputChange}: Props) => {
     } else {
       setUserIdError(true)
     }
-
-    setUserId(e.target.value)
-    onInputChange(e.target.value)
   }
 
     // userid 칸 빠져나갈 때 중복 검사
