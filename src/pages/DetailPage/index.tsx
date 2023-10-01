@@ -12,6 +12,7 @@ import { RootState } from '../../store';
 import AllLoading from '../../components/Loading/AllLoading';
 import Nav from '../../components/Layout/Nav';
 import { useTimeStamp } from '../../hooks/useTimeStamp';
+import TagUI from '../../components/common/TagUI';
 
 const DetailPage = () => {
   // 주소창에서 /:postId 부분을 가져온다
@@ -24,9 +25,7 @@ const DetailPage = () => {
   })
 
   const show = useSelector((state: RootState) => state.header.show);
-
   const bodyRef = useRef<HTMLDivElement>(null);
-
   const timeAgo = useTimeStamp(data?.post.created_at!);
 
   useEffect(() => {
@@ -54,7 +53,6 @@ const DetailPage = () => {
     <>
       <Nav />
       <Container>
-
         <Header>
           <HeaderWrapper>
 
@@ -64,9 +62,15 @@ const DetailPage = () => {
               <TitleText>{data?.post.title}</TitleText>
             </Title>
 
-            <BoardInfo>
+            <PostInfo>
               <div className='by'>by</div> <div className='user-name'>{data?.user.nickname}</div> <div className='date'>{timeAgo}</div>
-            </BoardInfo>
+            </PostInfo>
+
+            <TagBox>
+              {data?.tags.map((tag: string, index: number) => (
+                <TagUI key={index} name={tag} />
+              ))}
+            </TagBox>
 
           </HeaderWrapper>
         </Header>
@@ -123,7 +127,7 @@ const Title = styled.div`
   width: 700px;
   bottom: 0;
   right: 50%;
-  transform: translate(50%, -100px);
+  transform: translate(50%, -130px);
 `
 
 const TitleText = styled.div`
@@ -133,7 +137,7 @@ const TitleText = styled.div`
   color: #fff;
 `
 
-const BoardInfo = styled.div`
+const PostInfo = styled.div`
   position: absolute;
   display: flex;
   align-items: center;
@@ -141,7 +145,7 @@ const BoardInfo = styled.div`
   bottom: 0;
   right: 50%;
   color: #fff;
-  transform: translate(50%, -30px);
+  transform: translate(50%, -60px);
 
   & > .by {
     font-size: 0.8rem;
@@ -151,8 +155,8 @@ const BoardInfo = styled.div`
   }
 
   & > .user-name {
-    font-size: 1rem;
-    font-weight: 500;
+    font-size: 0.8rem;
+    font-weight: 600;
   }
 
   & > .date {
@@ -161,6 +165,17 @@ const BoardInfo = styled.div`
     font-weight: 600;
     margin-left: 0.5rem;
   }
+`
+
+const TagBox = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: 700px;
+  bottom: 0;
+  right: 50%;
+  color: #fff;
+  transform: translate(49%, -15px);
 `
 
 const Body = styled.div`
@@ -172,6 +187,7 @@ const Body = styled.div`
 
 const Article = styled.div`
   width: 700px;
+  text-align: left;
   margin: 0 auto;
   padding-top: 50px;
   background: #fff;
