@@ -17,7 +17,7 @@ function App() {
           <Route path='write' element={<WritePage />} />
           <Route path="Profile" element={<ProfilePage />} />
         </Route>
-        <Route path="/board/:postId" element={<DetailPage />} />
+        <Route path="/posts/:postId" element={<DetailPage />} />
       </Routes>
     </div>
   )

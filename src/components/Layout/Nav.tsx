@@ -23,7 +23,7 @@ const Nav = () => {
 
   const location = useLocation();
   useEffect(() => {
-    if (location.pathname.includes('/board/')) {
+    if (location.pathname.includes('/posts/')) {
 
       setDetailePage(true);
     } else {
