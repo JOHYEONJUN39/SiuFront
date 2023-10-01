@@ -17,10 +17,16 @@ const userSlice = createSlice({
       state.id = "";
       state.nickname = "";
       state.photo = "";
+    },
+    updateNickname: (state, action) => {
+      state.nickname = action.payload;
+    },
+    updatePhoto: (state, action) => {
+      state.photo = action.payload;
     }
   }
 })
 
-export const { setUser, resetUser } = userSlice.actions;
+export const { setUser, resetUser, updateNickname, updatePhoto } = userSlice.actions;
 
 export default userSlice.reducer;
