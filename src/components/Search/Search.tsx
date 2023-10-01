@@ -1,17 +1,30 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
 
 interface Props {
   data: {
-    id: number;
     title: string;
     article: string;
     created_at: string;
+    tag_names?: string[];
   }
 }
 
 const Search = ({data}: Props) => {
 
-  const date = data.created_at.split('T')[0]
+  const date = data.created_at.split("T")[0]
+
+  const navigate = useNavigate();
+
+  function replace(url: string) {     
+    url= encodeURIComponent(url);    
+    return url;
+  }
+
+  const handleTagSearch = (tag: string) => {
+    const encodedTag = replace(tag)
+    navigate(`/search?query=${encodedTag}`)
+  }
   
   return (
     <Container>
@@ -23,9 +36,18 @@ const Search = ({data}: Props) => {
         <Title>{data.title}</Title>
         <Description>{data.article}</Description>
         <TagBox>
-          <Tag>태그</Tag>
-          <Tag>태그</Tag>
-          <Tag>태그</Tag>
+          {
+            data.tag_names?.map((tag, index) => (
+              <Tag 
+                key={index}
+                onClick={() => {
+                  handleTagSearch(tag)
+                }}
+              >
+                {tag}
+              </Tag>
+            ))
+          }
         </TagBox>
         <Date>{date}</Date>
       </Info>
@@ -92,6 +114,7 @@ const Tag = styled.div`
   margin-right: 0.5rem;
   font-size: 0.8rem;
   font-weight: 300;
+  cursor: pointer;
 `
 
 const Date = styled.div`
