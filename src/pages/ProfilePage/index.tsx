@@ -4,7 +4,7 @@ import LNB from "../../components/common/NB/LNB";
 import type { page } from "../../types/Profile.interface";
 import { useState } from "react";
 import ProfilePostPage from "./ProfilePostPage";
-import ProfileSettingPage from "./profileSettingPage";
+import ProfileSettingPage from "./ProfileSettingPage";
 
 // 
 const pages : page[] = [
