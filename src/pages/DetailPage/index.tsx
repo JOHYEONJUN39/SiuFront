@@ -13,6 +13,7 @@ import AllLoading from '../../components/Loading/AllLoading';
 import Nav from '../../components/Layout/Nav';
 import { useTimeStamp } from '../../hooks/useTimeStamp';
 import TagUI from '../../components/common/TagUI';
+import Footer from '../../components/Detail/Footer';
 
 const DetailPage = () => {
   // 주소창에서 /:postId 부분을 가져온다
@@ -26,7 +27,7 @@ const DetailPage = () => {
 
   const show = useSelector((state: RootState) => state.header.show);
   const bodyRef = useRef<HTMLDivElement>(null);
-  const timeAgo = useTimeStamp(data?.post.created_at!);
+  const timeAgo = useTimeStamp(data?.post.created_at || '');
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { capture: true });
@@ -82,6 +83,9 @@ const DetailPage = () => {
             }}
           />
         </Body>
+
+        <Footer />
+
       </Container>
     </>
   )
@@ -91,7 +95,6 @@ export default DetailPage
 
 const Container = styled.div`
   min-width: 700px;
-  height: 1000vh;
 `
 
 const Header = styled.div`
@@ -183,6 +186,7 @@ const Body = styled.div`
   position: relative;
   background-color: #fff;
   height: 100%;
+  margin-bottom: 60px;
 `
 
 const Article = styled.div`
