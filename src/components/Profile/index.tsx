@@ -1,16 +1,17 @@
 import styled from "styled-components"
-
+import { RootState } from "../../store";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
-
+  const userData = useSelector((state: RootState) => state.user);
   return (
     <ProfileContainer>
       <ProfileImageCon>
-        <ProfileImage src="http://via.placeholder.com/640x640" alt="" />
+        <ProfileImage src={userData.photo} alt="" />
       </ProfileImageCon>
       <ProfileInfoCon>
         <ProfileInfo>
-          User Name
+          {userData.nickname}
         </ProfileInfo>
       </ProfileInfoCon>
     </ProfileContainer>
@@ -20,12 +21,12 @@ const Profile = () => {
 export default Profile;
 
 const ProfileContainer = styled.div`
-  width: 100%;
+  width: 70%;
   height: 260px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: red;
+  margin: 0 auto;
 `
 
 const ProfileImage = styled.img`
@@ -35,18 +36,16 @@ const ProfileImage = styled.img`
 `
 
 const ProfileImageCon = styled.div`
-  width: 20%;
+  flex: 0 1 auto;
   height: 100%;
   border-radius: 50%;
-  background-color: blue;
 `
 
 const ProfileInfoCon = styled.div`
-  width: 60%;
+  width: 70%;
   height: 100%;
   display: flex;
   align-items: center;
-  background-color: yellow;
 `
 
 const ProfileInfo = styled.div`
