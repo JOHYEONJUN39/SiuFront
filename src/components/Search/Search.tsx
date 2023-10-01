@@ -1,31 +1,20 @@
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
+import TagUI from "../common/TagUI";
+import { useTimeStamp } from "../../hooks/useTimeStamp";
 
 interface Props {
   data: {
     title: string;
     article: string;
-    created_at: string;
+    created_at: Date;
     tag_names?: string[];
   }
 }
 
 const Search = ({data}: Props) => {
 
-  const date = data.created_at.split("T")[0]
+  const timeAgo = useTimeStamp(data.created_at);
 
-  const navigate = useNavigate();
-
-  function replace(url: string) {     
-    url= encodeURIComponent(url);    
-    return url;
-  }
-
-  const handleTagSearch = (tag: string) => {
-    const encodedTag = replace(tag)
-    navigate(`/search?query=${encodedTag}`)
-  }
-  
   return (
     <Container>
       <ImageBox>
@@ -38,18 +27,11 @@ const Search = ({data}: Props) => {
         <TagBox>
           {
             data.tag_names?.map((tag, index) => (
-              <Tag 
-                key={index}
-                onClick={() => {
-                  handleTagSearch(tag)
-                }}
-              >
-                {tag}
-              </Tag>
+              <TagUI key={index} name={tag} />
             ))
           }
         </TagBox>
-        <Date>{date}</Date>
+        <Date>{timeAgo}</Date>
       </Info>
     </Container>
   )
@@ -105,16 +87,6 @@ const TagBox = styled.div`
   margin-top: 1rem;
   position: absolute;
   bottom: 1.5rem;
-`
-
-const Tag = styled.div`
-  background-color: #eee;
-  padding: 0.5rem 0.5rem;
-  border-radius: 0.5rem;
-  margin-right: 0.5rem;
-  font-size: 0.8rem;
-  font-weight: 300;
-  cursor: pointer;
 `
 
 const Date = styled.div`

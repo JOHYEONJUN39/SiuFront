@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { styled } from "styled-components"
 import Modal from "../Modal";
 import { useSelector } from "react-redux";
@@ -7,13 +7,29 @@ import { resetUser } from "../../store/userSlice";
 import { useDispatch } from "react-redux";
 import { showOpen } from "../../store/modalSlice";
 import SearchInput from "../Search/SearchInput";
+import { useEffect, useState } from "react";
 
 const Nav = () => {
+  const [detailePage, setDetailePage] = useState<boolean>(false)
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const setModal = useSelector((state: RootState) => state.modal);
   const userData = useSelector((state: RootState) => state.user);
+
+  const show = useSelector((state: RootState) => state.header.show);
+  console.log(show);
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.pathname.includes('/posts/')) {
+
+      setDetailePage(true);
+    } else {
+      setDetailePage(false);
+    }
+  }, [location.pathname]);
 
   // 모달 창 띄우기
   const handleModal = (modalType: string) => {
@@ -26,10 +42,10 @@ const Nav = () => {
     dispatch(resetUser())
     navigate("/")
   }
-  
+
   return (
     <>
-      <Header>
+      <Header $detailePage={detailePage} $show={show}>
         <HeaderInner>
           <HeaderWrapper>
             <HeaderTitle onClick={() => navigate('/')}>Newbiesiuuuu</HeaderTitle>
@@ -75,13 +91,18 @@ const Nav = () => {
 
 export default Nav
 
-const Header = styled.header`
-  background-color: #58FAD0;
-  border-bottom: 1px solid #eee;
+const Header = styled.header<{ $detailePage: boolean, $show: boolean }>`
+  background-color: ${
+    ({ $detailePage, $show }) => $detailePage && $show ? "#58FAD0" : $detailePage ? "transparent" : "#58FAD0"
+  };
   width: 100%;
-  position: fixed;
+
+  position: ${
+    ({ $detailePage, $show }) => $detailePage && $show ? "sticky" : $detailePage ? "relative" : "fixed"
+  };
   top: 0;
   z-index: 999;
+  transition: all 0.2s ease-out;
 `
 
 const HeaderInner = styled.div`

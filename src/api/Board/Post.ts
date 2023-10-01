@@ -11,4 +11,8 @@ export const Post = async (data: PostData) => {
   return await api.post('/api/createPost', data)
 }
 
+export const GetBoard = async (id: number) => {
+  const res = await api.get(`/api/posts/${id}`)
+  return res.data
+}
 

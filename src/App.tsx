@@ -5,6 +5,7 @@ import SearchPage from './pages/SearchPage'
 import WritePage from './pages/WritePage'
 import ProfilePage from './pages/ProfilePage'
 import Layout from './Layout'
+import DetailPage from './pages/DetailPage'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path='write' element={<WritePage />} />
           <Route path="Profile" element={<ProfilePage />} />
         </Route>
+        <Route path="/posts/:postId" element={<DetailPage />} />
       </Routes>
     </div>
   )
