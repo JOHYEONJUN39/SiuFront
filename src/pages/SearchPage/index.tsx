@@ -10,7 +10,7 @@ import Loading from '../../components/Loading/Loading';
 interface searchResult {
   title: string;
   article: string;
-  created_at: string;
+  created_at: Date;
   tag_names?: string[];
 }
 
