@@ -27,12 +27,16 @@ const DetailPage = () => {
     {
       enabled: !!postId,
       refetchOnWindowFocus: false,
+      onError: () => {
+        navigate("/404");
+      },
     }
   );
 
   const show = useSelector((state: RootState) => state.header.show);
   const bodyRef = useRef<HTMLDivElement>(null);
   const timeAgo = useTimeStamp(data?.post.created_at || "");
+  const userData = useSelector((state: RootState) => state.user);
 
   const handleEdit = () => {
     navigate(`/write?post=${postId}`);
@@ -58,7 +62,7 @@ const DetailPage = () => {
     window.addEventListener("scroll", handleScroll, { capture: true });
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll), { capture: true };
     };
   }, []);
 
@@ -95,14 +99,18 @@ const DetailPage = () => {
 
             <TagBox>
               {data?.tags.map((tag: string, index: number) => (
-                <TagUI key={index} name={tag} />
+                <TagUI key={index} tag_name={tag} />
               ))}
             </TagBox>
-
-            <ToolBox>
-              <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
-              <EditButton onClick={handleEdit}>수정</EditButton>
-            </ToolBox>
+            {
+              // 로그인한 유저와 작성자가 같을 경우에만 수정, 삭제 버튼이 보인다
+              userData?.id === data?.user.id && (
+                <ToolBox>
+                  <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
+                  <EditButton onClick={handleEdit}>수정</EditButton>
+                </ToolBox>
+              )
+            }
           </HeaderWrapper>
         </Header>
 
@@ -112,7 +120,11 @@ const DetailPage = () => {
               __html: DOMPurify.sanitize(data?.post.article || ""),
             }}
           />
-          <Footer />
+          <Footer
+            postId={Number(postId)}
+            userId={userData?.id}
+            comments={data?.comments}
+          />
         </Body>
       </Container>
     </>
@@ -217,13 +229,14 @@ const TagBox = styled.div`
   right: 50%;
   color: #fff;
   transform: translate(50%, -3rem);
+  z-index: 2;
 `;
 
 const Body = styled.div`
   margin-top: 400px;
   position: relative;
   background-color: #fff;
-  height: 100%;
+  height: 500vh;
   margin-bottom: 60px;
 `;
 
