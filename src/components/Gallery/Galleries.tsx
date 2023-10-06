@@ -1,17 +1,43 @@
 import { styled } from "styled-components"
 import GalleryItem from "./GalleryItem"
 import type GalleriesProps from "../../types/Galleries.interface"
-
+import { useEffect, useState } from "react"
+import { GetByTag } from "../../api/Search/Search"
+type Post = {
+  article: string;
+  id: number;
+  title: string;
+  tag_name: [key: string];
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+  view: number;
+};
 const Galleries = ({category} : GalleriesProps) => {
+  const [tagContent, setTagContent] = useState<Post[]>([]);
+  
+  useEffect(() =>{
+    async function getTagContent() {
+      const data = await GetByTag(`#${category}`);
+      setTagContent(data.data.sort(() => 0.5 - Math.random()).slice(0,4));
+      console.log(data);
+    }
+    getTagContent();
+  }
+  , [])
+
+  
+
   return (
     <GalleriesContainer>
       <GalleryCategory>{category}</GalleryCategory>
       <Gallery>
-        {/* map함수로 GalleryItem 랜더링 예정 */}
-        <GalleryItem />
-        <GalleryItem />
-        <GalleryItem />
-        <GalleryItem />
+        {
+          tagContent.map((content : Post, index) => {
+            
+            return <GalleryItem content={content} key={index} />
+          })
+        }
       </Gallery>
     </GalleriesContainer>
   )
