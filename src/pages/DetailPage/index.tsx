@@ -1,54 +1,79 @@
-import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
-import { GetBoard } from '../../api/Board/Post';
-import styled from 'styled-components';
-import DOMPurify from 'dompurify';
-import { useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { showOpen } from '../../store/headerSlice';
-import { showClose } from '../../store/headerSlice';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import AllLoading from '../../components/Loading/AllLoading';
-import Nav from '../../components/Layout/Nav';
-import { useTimeStamp } from '../../hooks/useTimeStamp';
-import TagUI from '../../components/common/TagUI';
-import Footer from '../../components/Detail/Footer';
+import { useMutation, useQuery } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { DeletePost, GetPost } from "../../api/Board/Post";
+import styled from "styled-components";
+import DOMPurify from "dompurify";
+import { useCallback, useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { showOpen } from "../../store/headerSlice";
+import { showClose } from "../../store/headerSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import AllLoading from "../../components/Loading/AllLoading";
+import Nav from "../../components/Layout/Nav";
+import { useTimeStamp } from "../../hooks/useTimeStamp";
+import TagUI from "../../components/common/TagUI";
+import Footer from "../../components/Detail/Footer";
 
 const DetailPage = () => {
   // 주소창에서 /:postId 부분을 가져온다
   const { postId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const { data, isLoading } = useQuery(['detail', postId], () => GetBoard(Number(postId)), {
-    enabled: !!postId,
-    refetchOnWindowFocus: false,
-  })
+  const { data, isLoading } = useQuery(
+    ["detail", postId],
+    () => GetPost(Number(postId)),
+    {
+      enabled: !!postId,
+      refetchOnWindowFocus: false,
+    }
+  );
 
   const show = useSelector((state: RootState) => state.header.show);
   const bodyRef = useRef<HTMLDivElement>(null);
-  const timeAgo = useTimeStamp(data?.post.created_at || '');
+  const timeAgo = useTimeStamp(data?.post.created_at || "");
+
+  const handleEdit = () => {
+    navigate(`/write?post=${postId}`);
+  };
+
+  const deleteMutation = useMutation((postId: number) => DeletePost(postId), {
+    onSuccess: () => {
+      alert("삭제되었습니다");
+      navigate("/");
+    },
+    onError: () => {
+      alert("삭제에 실패하였습니다");
+    },
+  });
+
+  const handleDelete = () => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      deleteMutation.mutate(Number(postId));
+    }
+  };
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { capture: true });
+    window.addEventListener("scroll", handleScroll, { capture: true });
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-    }
-  }, [])
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
 
     if (currentScrollY > bodyRef.current?.offsetTop!) {
       if (show) return;
-      dispatch(showOpen())
+      dispatch(showOpen());
     } else {
-      dispatch(showClose())
+      dispatch(showClose());
     }
-  }, [bodyRef.current])
+  }, [bodyRef.current]);
 
-  if (isLoading) return <AllLoading />
+  if (isLoading) return <AllLoading />;
 
   return (
     <>
@@ -56,7 +81,6 @@ const DetailPage = () => {
       <Container>
         <Header>
           <HeaderWrapper>
-
             <HeaderImage />
             <HeaderInner />
             <Title>
@@ -64,7 +88,9 @@ const DetailPage = () => {
             </Title>
 
             <PostInfo>
-              <div className='by'>by</div> <div className='user-name'>{data?.user.nickname}</div> <div className='date'>{timeAgo}</div>
+              <div className="by">by</div>{" "}
+              <div className="user-name">{data?.user.nickname}</div>{" "}
+              <div className="date">{timeAgo}</div>
             </PostInfo>
 
             <TagBox>
@@ -73,29 +99,32 @@ const DetailPage = () => {
               ))}
             </TagBox>
 
+            <ToolBox>
+              <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
+              <EditButton onClick={handleEdit}>수정</EditButton>
+            </ToolBox>
           </HeaderWrapper>
         </Header>
 
         <Body ref={bodyRef}>
           <Article
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(data?.post.article || ''),
+              __html: DOMPurify.sanitize(data?.post.article || ""),
             }}
           />
+          <Footer />
         </Body>
-
-        <Footer />
-
       </Container>
     </>
-  )
-}
+  );
+};
 
-export default DetailPage
+export default DetailPage;
 
 const Container = styled.div`
   min-width: 700px;
-`
+  margin: 0 auto;
+`;
 
 const Header = styled.div`
   position: fixed;
@@ -103,17 +132,17 @@ const Header = styled.div`
   left: 0;
   z-index: 0;
   width: 100%;
-`
+`;
 
 const HeaderWrapper = styled.div`
   position: relative;
   overflow: hidden;
-`
+`;
 
 const HeaderImage = styled.div`
   background-image: url("https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg");
   height: 450px;
-`
+`;
 
 const HeaderInner = styled.div`
   position: absolute;
@@ -123,22 +152,22 @@ const HeaderInner = styled.div`
   height: 450px;
   background-color: #000;
   opacity: 0.3;
-`
+`;
 
 const Title = styled.div`
   position: absolute;
   width: 700px;
   bottom: 0;
   right: 50%;
-  transform: translate(50%, -130px);
-`
+  transform: translate(50%, -10rem);
+`;
 
 const TitleText = styled.div`
   font-size: 3rem;
   font-weight: 400;
   margin: 0;
   color: #fff;
-`
+`;
 
 const PostInfo = styled.div`
   position: absolute;
@@ -148,7 +177,7 @@ const PostInfo = styled.div`
   bottom: 0;
   right: 50%;
   color: #fff;
-  transform: translate(50%, -60px);
+  transform: translate(50%, -4rem);
 
   & > .by {
     font-size: 0.8rem;
@@ -168,18 +197,27 @@ const PostInfo = styled.div`
     font-weight: 600;
     margin-left: 0.5rem;
   }
-`
+`;
+
+const ToolBox = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  width: 700px;
+  right: 50%;
+  transform: translate(50%, -2.5rem);
+`;
 
 const TagBox = styled.div`
   position: absolute;
   display: flex;
   align-items: center;
   width: 700px;
-  bottom: 0;
   right: 50%;
   color: #fff;
-  transform: translate(49%, -15px);
-`
+  transform: translate(50%, -3rem);
+`;
 
 const Body = styled.div`
   margin-top: 400px;
@@ -187,7 +225,7 @@ const Body = styled.div`
   background-color: #fff;
   height: 100%;
   margin-bottom: 60px;
-`
+`;
 
 const Article = styled.div`
   width: 700px;
@@ -198,4 +236,32 @@ const Article = styled.div`
   overflow: hidden;
   position: relative;
   z-index: 10;
-`
+`;
+
+const DeleteButton = styled.div`
+  width: 50px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+
+  &:hover {
+    color: #000;
+  }
+`;
+
+const EditButton = styled.div`
+  width: 50px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+
+  &:hover {
+    color: #000;
+  }
+`;
