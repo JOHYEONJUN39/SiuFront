@@ -1,5 +1,5 @@
-import { useLocation, useNavigate } from "react-router-dom"
-import { styled } from "styled-components"
+import { useLocation, useNavigate } from "react-router-dom";
+import { styled } from "styled-components";
 import Modal from "../Modal";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -10,7 +10,7 @@ import SearchInput from "../Search/SearchInput";
 import { useEffect, useState } from "react";
 
 const Nav = () => {
-  const [detailePage, setDetailePage] = useState<boolean>(false)
+  const [detailePage, setDetailePage] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -19,12 +19,10 @@ const Nav = () => {
   const userData = useSelector((state: RootState) => state.user);
 
   const show = useSelector((state: RootState) => state.header.show);
-  console.log(show);
 
   const location = useLocation();
   useEffect(() => {
-    if (location.pathname.includes('/posts/')) {
-
+    if (location.pathname.includes("/posts/")) {
       setDetailePage(true);
     } else {
       setDetailePage(false);
@@ -33,90 +31,97 @@ const Nav = () => {
 
   // 모달 창 띄우기
   const handleModal = (modalType: string) => {
-    dispatch(showOpen({
-      modalType
-    }))
-  }
+    dispatch(
+      showOpen({
+        modalType,
+      })
+    );
+  };
 
   const handleLogOut = () => {
-    dispatch(resetUser())
-    navigate("/")
-  }
+    dispatch(resetUser());
+    navigate("/");
+  };
 
   return (
     <>
       <Header $detailePage={detailePage} $show={show}>
         <HeaderInner>
           <HeaderWrapper>
-            <HeaderTitle onClick={() => navigate('/')}>Newbiesiuuuu</HeaderTitle>
+            <HeaderTitle onClick={() => navigate("/")}>
+              Newbiesiuuuu
+            </HeaderTitle>
 
             <SearchInput />
 
             <HeaderRight>
-              {
-                userData.id ? (
-                  <>
-                    <WriteButton onClick={() => navigate("/write")}>Write</WriteButton>
-                    <User>
-                      <UserImg src={userData.photo} alt="userImg" />
-                      <UserMenu>
-                        <UserMenuList onClick={() => navigate(`/user/${userData.id}`)}>Profile</UserMenuList>
-                        <UserMenuList onClick={handleLogOut}>Logout</UserMenuList>
-                      </UserMenu>
-                    </User>
-                  </>
-
-                ) : (
-                  <>
-                    <LoginButton onClick={() => handleModal("login")}>Login</LoginButton>
-                    <RegistButton onClick={() => handleModal("register")}>Register</RegistButton>      
-                  </>
-                )
-              }
+              {userData.id ? (
+                <>
+                  <WriteButton onClick={() => navigate("/write")}>
+                    Write
+                  </WriteButton>
+                  <User>
+                    <UserImg src={userData.photo} alt="userImg" />
+                    <UserMenu>
+                      <UserMenuList
+                        onClick={() => navigate(`/user/${userData.id}`)}
+                      >
+                        Profile
+                      </UserMenuList>
+                      <UserMenuList onClick={handleLogOut}>Logout</UserMenuList>
+                    </UserMenu>
+                  </User>
+                </>
+              ) : (
+                <>
+                  <LoginButton onClick={() => handleModal("login")}>
+                    Login
+                  </LoginButton>
+                  <RegistButton onClick={() => handleModal("register")}>
+                    Register
+                  </RegistButton>
+                </>
+              )}
             </HeaderRight>
-
           </HeaderWrapper>
         </HeaderInner>
       </Header>
 
-    {
-      setModal.show && (
-        <Modal />
-      )
-    }
-
+      {setModal.show && <Modal />}
     </>
-  )
-}
+  );
+};
 
-export default Nav
+export default Nav;
 
-const Header = styled.header<{ $detailePage: boolean, $show: boolean }>`
-  background-color: ${
-    ({ $detailePage, $show }) => $detailePage && $show ? "#58FAD0" : $detailePage ? "transparent" : "#58FAD0"
-  };
+const Header = styled.header<{ $detailePage: boolean; $show: boolean }>`
+  background-color: ${({ $detailePage, $show }) =>
+    $detailePage && $show
+      ? "#58FAD0"
+      : $detailePage
+      ? "transparent"
+      : "#58FAD0"};
   width: 100%;
 
-  position: ${
-    ({ $detailePage, $show }) => $detailePage && $show ? "sticky" : $detailePage ? "relative" : "fixed"
-  };
+  position: ${({ $detailePage, $show }) =>
+    $detailePage && $show ? "sticky" : $detailePage ? "relative" : "fixed"};
   top: 0;
   z-index: 999;
   transition: all 0.2s ease-out;
-`
+`;
 
 const HeaderInner = styled.div`
   max-width: 1240px;
   margin: 0 auto;
   position: relative;
-`
+`;
 
 const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 60px;
-`
+`;
 
 const HeaderTitle = styled.h1`
   font-size: 1.5rem;
@@ -125,13 +130,13 @@ const HeaderTitle = styled.h1`
   margin: 0;
   cursor: pointer;
   text-shadow: 2px 3px 0px #bdbdbd;
-`
+`;
 
 const HeaderRight = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
 
 const LoginButton = styled.div`
   width: 90px;
@@ -146,9 +151,9 @@ const LoginButton = styled.div`
 
   &:hover {
     cursor: pointer;
-    background-color: #A9D0F5;
+    background-color: #a9d0f5;
   }
-`
+`;
 const RegistButton = styled.div`
   width: 90px;
   height: 35px;
@@ -161,9 +166,9 @@ const RegistButton = styled.div`
 
   &:hover {
     cursor: pointer;
-    background-color: #6E6E6E;
+    background-color: #6e6e6e;
   }
-`
+`;
 
 const WriteButton = styled.div`
   width: 90px;
@@ -178,9 +183,9 @@ const WriteButton = styled.div`
 
   &:hover {
     cursor: pointer;
-    background-color: #A9D0F5;
+    background-color: #a9d0f5;
   }
-`
+`;
 
 const UserMenu = styled.div`
   display: none;
@@ -215,7 +220,7 @@ const UserMenu = styled.div`
     right: 0;
     border: 10px solid transparent;
   }
-`
+`;
 
 const UserMenuList = styled.div`
   display: flex;
@@ -228,7 +233,7 @@ const UserMenuList = styled.div`
   &:hover {
     background-color: #eee;
   }
-`
+`;
 
 const User = styled.div`
   display: flex;
@@ -242,11 +247,11 @@ const User = styled.div`
       display: block;
     }
   }
-`
+`;
 
 const UserImg = styled.img`
   width: 40px;
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
-`
+`;

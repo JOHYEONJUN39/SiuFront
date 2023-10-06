@@ -1,25 +1,38 @@
-import React, { useState } from 'react'
-import styled from 'styled-components';
+import React, { useState } from "react";
+import styled from "styled-components";
 
 interface Props {
   onTagsChange: (tags: string[]) => void;
+  tags: string[];
 }
 
-const TagInput = ({onTagsChange}: Props) => {
-  const [tag, setTag] = useState<string>("")
-  const [tags, setTags] = useState<string[]>([])
+const TagInput = ({ onTagsChange, tags }: Props) => {
+  const [tag, setTag] = useState<string>("");
 
   const handleTag = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTag(e.target.value)
-    onTagsChange(tags)
-  }
+    setTag(e.target.value);
+  };
+
+  const addTag = () => {
+    if (tag === "") return;
+    if (tags.includes("#" + tag)) {
+      setTag("");
+      return;
+    }
+    const newTags = [...tags, "#" + tag];
+    onTagsChange(newTags);
+    setTag("");
+  };
+
+  const removeTag = (clickedTag: string) => {
+    const newTags = tags.filter((tag) => tag !== clickedTag);
+    onTagsChange(newTags);
+  };
 
   return (
     <TagList>
       {tags.map((tag, index) => (
-        <Tag onClick={() => {
-          setTags(tags.filter((e) => e !== tag))
-        }} key={index}>
+        <Tag onClick={() => removeTag(tag)} key={index}>
           {tag}
         </Tag>
       ))}
@@ -31,16 +44,13 @@ const TagInput = ({onTagsChange}: Props) => {
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
-            if (tag === "") return;
-            else if (tags.includes('#' + tag)) {
-              setTag("")
-              return;
+            addTag();
+          } else if (e.key === "Backspace" && tag === "") {
+            // 태그 입력 필드가 비어있을 때 Backspace를 누르면 마지막 태그를 삭제합니다.
+            const lastTag = tags[tags.length - 1];
+            if (lastTag) {
+              removeTag(lastTag);
             }
-            setTags([...tags, '#' + e.currentTarget.value])
-            setTag("")
-          }
-          else if (e.key === "Backspace" && tag === "") {
-            setTags(tags.slice(0, tags.length - 1))
           }
         }}
       />
@@ -49,10 +59,10 @@ const TagInput = ({onTagsChange}: Props) => {
         등록된 태그를 클릭하면 삭제됩니다
       </TagTooltip>
     </TagList>
-  )
-}
+  );
+};
 
-export default TagInput
+export default TagInput;
 
 const TagTooltip = styled.div`
   display: none;
@@ -68,7 +78,7 @@ const TagTooltip = styled.div`
   color: #fff;
   z-index: 1;
   animation: fadeIn 0.5s;
-  
+
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -80,7 +90,7 @@ const TagTooltip = styled.div`
       transform: translateY(0);
     }
   }
-`
+`;
 
 const TagIn = styled.input`
   width: 10rem;
@@ -96,7 +106,7 @@ const TagIn = styled.input`
   &:focus + ${TagTooltip} {
     display: block;
   }
-`
+`;
 
 const TagList = styled.div`
   width: 100%;
@@ -107,7 +117,7 @@ const TagList = styled.div`
   flex-wrap: wrap;
   margin-bottom: 1rem;
   position: relative;
-`
+`;
 
 const Tag = styled.div`
   display: flex;
@@ -118,7 +128,7 @@ const Tag = styled.div`
   background-color: #eee;
   padding: 0 1rem;
   border-radius: 0.5rem;
-  color: #2E2EFE;
+  color: #2e2efe;
   font-weight: 600;
   cursor: pointer;
 
@@ -135,4 +145,4 @@ const Tag = styled.div`
       transform: translateY(0);
     }
   }
-`
+`;

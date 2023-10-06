@@ -1,51 +1,50 @@
-import React, { useState } from 'react'
-import { RootState } from '../../store'
-import { useSelector } from 'react-redux'
-import styled from 'styled-components'
+import React, { useState } from "react";
+import { RootState } from "../../store";
+import { useSelector } from "react-redux";
+import styled from "styled-components";
 
 interface Props {
   onInputChange: (value: string) => void;
 }
 
-const IdInput = ({onInputChange}: Props) => {
-  const [userId, setUserId] = useState<string>("")
-  const [idDuplicate, setIdDuplicate] = useState<boolean>(false)
-  const [userIdError, setUserIdError] = useState<boolean>(false)
+const IdInput = ({ onInputChange }: Props) => {
+  const [userId, setUserId] = useState<string>("");
+  const [idDuplicate, setIdDuplicate] = useState<boolean>(false);
+  const [userIdError, setUserIdError] = useState<boolean>(false);
 
-  const type = useSelector((state: RootState) => state.modal.modalType)
+  const type = useSelector((state: RootState) => state.modal.modalType);
 
   // 아이디 유효성 검사
   const handleUserId = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIdDuplicate(false);
 
-    setIdDuplicate(false)
-
-    setUserId(e.target.value)
-    onInputChange(e.target.value)
+    setUserId(e.target.value);
+    onInputChange(e.target.value);
 
     if (type === "login") {
       return;
     }
 
-    const regExp = /^[a-zA-Z0-9]{4,12}$/
-    if(regExp.test(e.target.value) || e.target.value === "") {
-      setUserIdError(false)
+    const regExp = /^[a-zA-Z0-9]{4,12}$/;
+    if (regExp.test(e.target.value) || e.target.value === "") {
+      setUserIdError(false);
     } else {
-      setUserIdError(true)
+      setUserIdError(true);
     }
-  }
+  };
 
-    // userid 칸 빠져나갈 때 중복 검사
-    const handleUserIdBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      if (e.target.value === 'test') {
-        setIdDuplicate(true)
-      } else {
-        setIdDuplicate(false)
-      }
+  // userid 칸 빠져나갈 때 중복 검사
+  const handleUserIdBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (e.target.value === "test") {
+      setIdDuplicate(true);
+    } else {
+      setIdDuplicate(false);
     }
+  };
 
   return (
     <>
-      <UserId 
+      <UserId
         type="text"
         placeholder="ID"
         value={userId}
@@ -53,31 +52,25 @@ const IdInput = ({onInputChange}: Props) => {
         $error={userIdError}
         onBlur={handleUserIdBlur}
       />
-      {
-        userIdError && (
-          <ErrorText>아이디는 4~12자의 영문 대소문자와 숫자로만 입력해주세요.</ErrorText>
-        )
-      }
+      {userIdError && (
+        <ErrorText>
+          아이디는 4~12자의 영문 대소문자와 숫자로만 입력해주세요.
+        </ErrorText>
+      )}
 
-      {
-        idDuplicate && (
-          <ErrorText>이미 존재하는 아이디입니다.</ErrorText>
-        )
-      }
+      {idDuplicate && <ErrorText>이미 존재하는 아이디입니다.</ErrorText>}
     </>
+  );
+};
 
+export default IdInput;
 
-  )
-}
-
-export default IdInput
-
-const UserId = styled.input<{$error: boolean}>`
+const UserId = styled.input<{ $error: boolean }>`
   width: 300px;
   height: 40px;
   border: none;
   background-color: transparent;
-  border-bottom: 1px solid rgba(255, 255, 255, .2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 0.2rem;
   margin-bottom: 1rem;
   box-sizing: border-box;
@@ -98,7 +91,9 @@ const UserId = styled.input<{$error: boolean}>`
     margin-left: 1rem;
   }
 
-  ${({$error}) => $error && `
+  ${({ $error }) =>
+    $error &&
+    `
     border-bottom: 2px solid red;
 
     &:focus {
@@ -109,10 +104,10 @@ const UserId = styled.input<{$error: boolean}>`
       border-bottom: 2px solid red;
     }
   `}
-`
+`;
 
 const ErrorText = styled.p`
   color: red;
   font-size: 0.8rem;
   margin-bottom: 1rem;
-`
+`;
