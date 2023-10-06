@@ -2,14 +2,21 @@ import { styled } from "styled-components"
 import Galleries from "../../components/Gallery/Galleries";
 import TopButton from "../../components/TopButton";
 
-const MainPage = () => {
+const tagName = [
+  "테스트",
+  "ㅇㅈ",
+  "엄준식"
+]
 
+const MainPage = () => {
+  
   return (
     <Con>
-      <Galleries category="인기순" />
-      <Galleries category="추천" />
-      <Galleries category="정치" />
-      <Galleries category="영화" />
+      {
+        tagName.map((tag, index) => {
+          return <Galleries category={tag} key={index} />
+        })
+      }
       <TopButton />
     </Con>
   )
