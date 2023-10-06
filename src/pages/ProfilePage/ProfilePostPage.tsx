@@ -1,41 +1,61 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
+type Post = {
+  article: string;
+  id: number;
+  title: string;
+  tag_name: [key: string];
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+  view: number;
+};
 
 
 const ProfilePostPage = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
 
+    useEffect(() => {
+      axios.get('http://localhost:8000/api/posts/users/hetame')
+      .then(response => {
+        console.log(response.data);
+        setPosts(response.data.data.reverse());
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    }
+    , [])
+    
   return (
     <Container>
       <ProfileChangeCon>
-        <PostCon>
-          <PostImg src="https://i.ytimg.com/vi/ac6d5rCJj5w/maxresdefault.jpg" />
-          <Post>엄준식</Post>
-          <TagCon>
-            <Tag>엄</Tag>
-            <Tag>준식</Tag>
-          </TagCon>
-          <Date>2023.11.02</Date>
-        </PostCon>
 
-        <PostCon>
-          <PostImg src="https://vocalmagazine.jp/wp-content/uploads/2023/04/%E3%83%A9%E3%82%A4%E3%83%96%E3%82%B9%E3%83%81%E3%83%BC%E3%83%AB_2.jpg" />
-          <Post>요아소비 콘서트 다녀옴</Post>
-          <TagCon>
-            <Tag>요아소비</Tag>
-            <Tag>콘서트</Tag>
-          </TagCon>
-          <Date>2023.11.02</Date>
-        </PostCon>
+        {posts.map((post) => (
+          <PostCon key={post.id}>
+            <PostImg src="https://i.ytimg.com/vi/ac6d5rCJj5w/maxresdefault.jpg" />
+            <PostTitle>{post.title}</PostTitle>
+            <Post>{post.article.replace(/<\/?p>/g, '')}</Post>
+            {
+              post.tag_name.length >= 1
+              ?
+              <TagCon>
+              {post.tag_name.map((tag, index) => (
+                <Tag key={index}>{tag}</Tag>
+              ))}
+              </TagCon>
+              : null
+            }
+            
 
-        <PostCon>
-          <PostImg src="https://velog.velcdn.com/images/kisuk623/post/0d6faccb-9cba-480a-ba71-9c9369b6915e/image.png" />
-          <Post>네스트 배웁니다.</Post>
-          <TagCon>
-            <Tag>Nest</Tag>
-            <Tag>구글</Tag>
-          </TagCon>
-          <Date>2023.11.02</Date>
-        </PostCon>
+            <PostFoot>
+              <Date>{post.created_at.slice(0,10)}</Date>
+              <View>조회수 : {post.view}</View>
+            </PostFoot>
+          </PostCon>
+        ))}
       </ProfileChangeCon>
     </Container>
   )
@@ -45,14 +65,14 @@ export default ProfilePostPage;
 
 const Container = styled.div`
   width: 100%;
-  height: 1000px;
+  height: auto;
   display: flex;
   flex-direction: column;
 `
 
 const ProfileChangeCon = styled.div`
   width: 70%;
-  height: 600px;
+  height: auto;
   display: flex;
   flex-direction: column;
   margin: 0 auto;
@@ -63,6 +83,7 @@ const PostCon = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
+  
   margin-bottom: 4rem;
   background-color: #F8F9FA;
   padding : 1rem;
@@ -74,9 +95,21 @@ const PostImg = styled.img`
   height: 75%;
 `
 
-const Post = styled.p`
+const PostTitle = styled.p`
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: 1rem;
+`
+
+const Post = styled(PostTitle)`
   font-size: 1.2rem;
-  margin: 20px 0;
+  font-weight: 400;
+  margin: 7px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+
 `
 
 const TagCon = styled.div`
@@ -98,6 +131,19 @@ const Tag = styled.button`
   }
 `
 
-const Date = styled(Post)`
-  
+const Date = styled.p`
+  font-size: 1.2rem;
+`
+
+const View = styled(Date)`
+
+`
+
+const PostFoot = styled.div`
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 7px;
 `
