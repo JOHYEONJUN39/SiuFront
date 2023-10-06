@@ -1,28 +1,21 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDebounce } from "../../hooks/useDebounce";
-import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { GetBySearch, GetByTag } from "../../api/Search/Search";
 import Search from "../../components/Search/Search";
 import { useQuery } from "react-query";
 import Loading from "../../components/Loading/Loading";
-
-interface searchResult {
-  title: string;
-  article: string;
-  created_at: Date;
-  tag_names?: string[];
-}
+import { Post } from "../../types/Board.interface";
 
 const SearchPage = () => {
-  const [searchResult, setSearchResult] = useState<searchResult[]>([]);
+  const navigate = useNavigate();
 
   // 검색어 가져오기
   const query = new URLSearchParams(useLocation().search);
   const searchQuery = query.get("query");
 
   // 검색 하고 1초 후에 검색 결과 가져오기
-  const debounceSearch = useDebounce(searchQuery!, 1000);
+  const debounceSearch = useDebounce(searchQuery!, 1500);
 
   // 검색 결과 가져오기 useQuery 사용
   // 후에 useInfiniteQuery로 변경
@@ -37,14 +30,11 @@ const SearchPage = () => {
     {
       enabled: !!debounceSearch,
       refetchOnWindowFocus: false,
+      onError: () => {
+        navigate("/404");
+      },
     }
   );
-
-  useEffect(() => {
-    if (data) {
-      setSearchResult(data);
-    }
-  }, [data]);
 
   if (isLoading) {
     return <Loading />;
@@ -53,12 +43,12 @@ const SearchPage = () => {
   return (
     <Container>
       <Result>{debounceSearch}</Result>
-      {searchResult.map((result, index) => (
-        <div key={index}>
-          <Search data={result} />
-        </div>
+
+      {data?.data.map((post: Post) => (
+        <Search key={post.id} data={post} />
       ))}
-      {searchResult.length === 0 && isLoading === false && (
+
+      {data.data.length === 0 && isLoading === false && (
         <NoResult>검색 결과가 없습니다.</NoResult>
       )}
     </Container>
@@ -71,7 +61,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 8rem;
+  margin-top: 2rem;
 `;
 
 const Result = styled.div`
