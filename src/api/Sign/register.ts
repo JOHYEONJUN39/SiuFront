@@ -4,8 +4,10 @@ type RegisterData = {
   id: string;
   nickname: string;
   password: string;
-}
+};
 
 export const register = async (data: RegisterData) => {
-  return await api.post('/api/register', data)
-}
+  console.log(data);
+
+  return await api.post("/api/register", data);
+};

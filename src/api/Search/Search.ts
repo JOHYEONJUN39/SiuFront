@@ -1,15 +1,14 @@
 import axios from "axios";
 
-function replace(url: string) {     
-  url= encodeURIComponent(url);    
+function replace(url: string) {
+  url = encodeURIComponent(url);
   return url;
 }
 
 export const GetBySearch = async (searchQuery: string) => {
-  const response = await axios.get(`/api/posts/search/${searchQuery}`);
-  console.log(response.data);
-  return response.data;
-}
+  const res = await axios.get(`/api/posts/search/${searchQuery}`);
+  return res.data;
+};
 
 export const GetByTag = async (tag: string) => {
   const searchValue = replace(tag);
@@ -26,4 +25,4 @@ export const GetTagList = async (value: string) => {
     console.error(error);
     throw error;
   }
-}
+};

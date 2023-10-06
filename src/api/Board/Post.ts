@@ -1,7 +1,7 @@
 import api from "..";
-import { EditType, PostType } from "../../pages/WritePage";
+import { EditWritePost, WritePost } from "../../types/Write.interface";
 
-export const Post = async (data: PostType) => {
+export const Post = async (data: WritePost) => {
   return await api.post("/api/createPost", data);
 };
 
@@ -10,7 +10,7 @@ export const GetPost = async (id: number) => {
   return res.data;
 };
 
-export const EditPost = async (data: EditType, id: number) => {
+export const EditPost = async (data: EditWritePost, id: number) => {
   return await api.patch(`/api/posts/update/${id}`, data);
 };
 
