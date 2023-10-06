@@ -1,35 +1,35 @@
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components"
+import styled from "styled-components";
 
 interface Props {
-  name: string;
+  tag_name: string;
 }
 
-const TagUI = ({name}: Props) => {
+const TagUI = ({ tag_name }: Props) => {
   const navigate = useNavigate();
 
-  function replace(url: string) {     
-    url= encodeURIComponent(url);    
+  function replace(url: string) {
+    url = encodeURIComponent(url);
     return url;
   }
 
   const handleTagSearch = (tag: string) => {
-    const encodedTag = replace(tag)
-    navigate(`/search?query=${encodedTag}`)
-  }
+    const encodedTag = replace(tag);
+    navigate(`/search?query=${encodedTag}`);
+  };
 
   return (
     <Tag
       onClick={() => {
-        handleTagSearch(name)
+        handleTagSearch(tag_name);
       }}
     >
-      {name}
+      {tag_name}
     </Tag>
-  )
-}
+  );
+};
 
-export default TagUI
+export default TagUI;
 
 const Tag = styled.div`
   display: flex;
@@ -40,8 +40,9 @@ const Tag = styled.div`
   padding: 0px 12px;
   border-radius: 15px;
   background-color: #eee;
-  color: #A9A9F5;
+  color: #a9a9f5;
   font-weight: 600;
   margin-right: 0.5rem;
   cursor: pointer;
-`
+  z-index: 10;
+`;
