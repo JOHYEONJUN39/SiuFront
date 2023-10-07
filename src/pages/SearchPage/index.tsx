@@ -3,9 +3,11 @@ import { useDebounce } from "../../hooks/useDebounce";
 import { styled } from "styled-components";
 import { GetBySearch, GetByTag } from "../../api/Search/Search";
 import Search from "../../components/Search/Search";
-import { useQuery } from "react-query";
+import { useInfiniteQuery } from "react-query";
 import Loading from "../../components/Loading/Loading";
 import { Post } from "../../types/Board.interface";
+import InfiniteScroll from "react-infinite-scroller";
+import { BeatLoader } from "react-spinners";
 
 const SearchPage = () => {
   const navigate = useNavigate();
@@ -17,24 +19,34 @@ const SearchPage = () => {
   // 검색 하고 1초 후에 검색 결과 가져오기
   const debounceSearch = useDebounce(searchQuery!, 1500);
 
-  // 검색 결과 가져오기 useQuery 사용
-  // 후에 useInfiniteQuery로 변경
-  const { data, isLoading } = useQuery(
-    ["search", debounceSearch],
-    () => {
-      if (debounceSearch[0] === "#") {
-        return GetByTag(debounceSearch);
-      }
-      return GetBySearch(debounceSearch);
-    },
-    {
-      enabled: !!debounceSearch,
-      refetchOnWindowFocus: false,
-      onError: () => {
-        navigate("/404");
+  const { data, isLoading, isFetching, hasNextPage, fetchNextPage } =
+    useInfiniteQuery(
+      ["search", debounceSearch],
+      ({ pageParam = 0 }) => {
+        if (debounceSearch![0] === "#") {
+          return GetByTag(debounceSearch!, pageParam);
+        }
+        return GetBySearch(debounceSearch!, pageParam);
       },
-    }
-  );
+      {
+        enabled: !!debounceSearch,
+        refetchOnWindowFocus: false,
+        onError: () => {
+          navigate("/404");
+        },
+        getNextPageParam: (lastpage) => {
+          const page = lastpage.current_page;
+          if (lastpage.last_page === page) {
+            return undefined;
+          }
+          return page + 1;
+        },
+      }
+    );
+
+  const loadmore = () => {
+    fetchNextPage();
+  };
 
   if (isLoading) {
     return <Loading />;
@@ -44,11 +56,17 @@ const SearchPage = () => {
     <Container>
       <Result>{debounceSearch}</Result>
 
-      {data?.data.map((post: Post) => (
-        <Search key={post.id} data={post} />
-      ))}
+      <InfiniteScroll loadMore={loadmore} hasMore={hasNextPage}>
+        {data?.pages.map((page) => {
+          return page.data.map((post: Post) => {
+            return <Search key={post.id} data={post} />;
+          });
+        })}
+      </InfiniteScroll>
 
-      {data.data.length === 0 && isLoading === false && (
+      {isFetching && <BeatLoader size={12} style={{ marginBottom: "1rem " }} />}
+
+      {data?.pages.length === 0 && isLoading === false && (
         <NoResult>검색 결과가 없습니다.</NoResult>
       )}
     </Container>

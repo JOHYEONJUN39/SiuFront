@@ -5,14 +5,14 @@ function replace(url: string) {
   return url;
 }
 
-export const GetBySearch = async (searchQuery: string) => {
-  const res = await axios.get(`/api/posts/search/${searchQuery}`);
+export const GetBySearch = async (searchQuery: string, page: string) => {
+  const res = await axios.get(`/api/posts/search/${searchQuery}?page=${page}`);
   return res.data;
 };
 
-export const GetByTag = async (tag: string) => {
+export const GetByTag = async (tag: string, page: string) => {
   const searchValue = replace(tag);
-  const res = await axios.get(`/api/postTags?tag=${searchValue}`);
+  const res = await axios.get(`/api/postTags?tag=${searchValue}&page=${page}`);
   return res.data;
 };
 
