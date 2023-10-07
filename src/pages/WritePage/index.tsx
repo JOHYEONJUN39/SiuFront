@@ -7,19 +7,7 @@ import { EditPost, GetPost, Post } from "../../api/Board/Post";
 import TagInput from "../../components/Write/TagInput";
 import { useMutation, useQuery } from "react-query";
 import AllLoading from "../../components/Loading/AllLoading";
-
-export type PostType = {
-  user_id: string;
-  title: string;
-  article: string;
-  tags: string[];
-};
-
-export type EditType = {
-  title: string;
-  article: string;
-  tags: string[];
-};
+import { EditWritePost, WritePost } from "../../types/Write.interface";
 
 const WritePage = () => {
   const [title, setTitle] = useState<string>("");
@@ -69,7 +57,7 @@ const WritePage = () => {
     setTitle(e.target.value);
   };
 
-  const wirteMutation = useMutation((post: PostType) => Post(post), {
+  const wirteMutation = useMutation((post: WritePost) => Post(post), {
     onSuccess: () => {
       alert("글 작성이 완료되었습니다.");
       navigate("/");
@@ -80,7 +68,7 @@ const WritePage = () => {
   });
 
   const editMutation = useMutation(
-    (edit: EditType) => EditPost(edit, Number(editQuery)),
+    (edit: EditWritePost) => EditPost(edit, Number(editQuery)),
     {
       onSuccess: () => {
         alert("글 수정이 완료되었습니다.");
@@ -114,7 +102,7 @@ const WritePage = () => {
   };
 
   return (
-    <>
+    <Container>
       <TitleInput
         type="text"
         placeholder="Title"
@@ -127,7 +115,7 @@ const WritePage = () => {
       <ReactQuill
         ref={quillRef}
         modules={modules}
-        style={{ height: "80vh", paddingBottom: "2rem" }}
+        style={{ height: "500px", paddingBottom: "2rem" }}
         theme="snow"
         value={content}
         onChange={setContent}
@@ -141,11 +129,13 @@ const WritePage = () => {
       </WriteBottom>
 
       {wirteMutation.isLoading && <AllLoading />}
-    </>
+    </Container>
   );
 };
 
 export default WritePage;
+
+const Container = styled.div``;
 
 const TitleInput = styled.input`
   width: 100%;

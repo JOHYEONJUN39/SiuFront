@@ -15,10 +15,17 @@ const TagInput = ({ onTagsChange, tags }: Props) => {
 
   const addTag = () => {
     if (tag === "") return;
+
+    if (tag.length < 2) {
+      setTag("");
+      return;
+    }
+
     if (tags.includes("#" + tag)) {
       setTag("");
       return;
     }
+
     const newTags = [...tags, "#" + tag];
     onTagsChange(newTags);
     setTag("");

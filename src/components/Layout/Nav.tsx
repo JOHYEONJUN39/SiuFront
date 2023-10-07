@@ -48,9 +48,7 @@ const Nav = () => {
       <Header $detailePage={detailePage} $show={show}>
         <HeaderInner>
           <HeaderWrapper>
-            <HeaderTitle onClick={() => navigate("/")}>
-              Newbiesiuuuu
-            </HeaderTitle>
+            <HeaderTitle onClick={() => navigate("/")}>BlogHub</HeaderTitle>
 
             <SearchInput />
 
@@ -95,16 +93,16 @@ const Nav = () => {
 export default Nav;
 
 const Header = styled.header<{ $detailePage: boolean; $show: boolean }>`
-  background-color: ${({ $detailePage, $show }) =>
-    $detailePage && $show
-      ? "#58FAD0"
-      : $detailePage
-      ? "transparent"
-      : "#58FAD0"};
+  background-color: ${({ $show }) => $show && "rgba(255, 255, 255, 0.8)"};
   width: 100%;
-
-  position: ${({ $detailePage, $show }) =>
-    $detailePage && $show ? "sticky" : $detailePage ? "relative" : "fixed"};
+  background-image: ${({ $detailePage, $show }) =>
+    $detailePage
+      ? "none"
+      : $show
+      ? "none"
+      : "url(https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg)"};
+  background-position: center;
+  position: sticky;
   top: 0;
   z-index: 999;
   transition: all 0.2s ease-out;
@@ -120,13 +118,13 @@ const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  height: 5rem;
 `;
 
 const HeaderTitle = styled.h1`
   font-size: 1.5rem;
   font-weight: 700;
-  color: #fff;
+  color: #000;
   margin: 0;
   cursor: pointer;
   text-shadow: 2px 3px 0px #bdbdbd;
@@ -146,12 +144,13 @@ const LoginButton = styled.div`
   justify-content: center;
   border-radius: 0.5rem;
   margin-right: 1rem;
-  background-color: #fff;
+  background-color: #848484;
+  color: #d8d8d8;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.4);
 
   &:hover {
     cursor: pointer;
-    background-color: #a9d0f5;
+    background-color: #424242;
   }
 `;
 const RegistButton = styled.div`
@@ -161,12 +160,13 @@ const RegistButton = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 0.5rem;
-  background-color: #fff;
+  background-color: #848484;
+  color: #d8d8d8;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.4);
 
   &:hover {
     cursor: pointer;
-    background-color: #6e6e6e;
+    background-color: #424242;
   }
 `;
 
@@ -177,13 +177,14 @@ const WriteButton = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 0.5rem;
-  background-color: #fff;
+  background-color: #6e6e6e;
+  color: #cef6f5;
   margin-right: 1rem;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.4);
 
   &:hover {
     cursor: pointer;
-    background-color: #a9d0f5;
+    background-color: #424242;
   }
 `;
 

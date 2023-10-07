@@ -1,19 +1,18 @@
 import axios from "axios";
 
-function replace(url: string) {     
-  url= encodeURIComponent(url);    
+function replace(url: string) {
+  url = encodeURIComponent(url);
   return url;
 }
 
-export const GetBySearch = async (searchQuery: string) => {
-  const response = await axios.get(`/api/posts/search/${searchQuery}`);
-  console.log(response.data);
-  return response.data;
-}
+export const GetBySearch = async (searchQuery: string, page: string) => {
+  const res = await axios.get(`/api/posts/search/${searchQuery}?page=${page}`);
+  return res.data;
+};
 
-export const GetByTag = async (tag: string) => {
+export const GetByTag = async (tag: string, page: string) => {
   const searchValue = replace(tag);
-  const res = await axios.get(`/api/postTags?tag=${searchValue}`);
+  const res = await axios.get(`/api/postTags?tag=${searchValue}&page=${page}`);
   return res.data;
 };
 
@@ -26,4 +25,4 @@ export const GetTagList = async (value: string) => {
     console.error(error);
     throw error;
   }
-}
+};

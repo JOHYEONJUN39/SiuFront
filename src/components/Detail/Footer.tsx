@@ -1,39 +1,85 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { Comment } from "../../types/Board.interface";
+import CommentUI from "./CommentUI";
+import { useMutation, useQueryClient } from "react-query";
+import { WriteComment } from "../../types/Write.interface";
+import { postComment } from "../../api/Comment/comment";
 
-const Footer = () => {
+interface Props {
+  postId: number;
+  userId: string;
+  comments: Comment[];
+}
+
+const Footer = ({ postId, userId, comments }: Props) => {
   const [comment, setComment] = useState("");
   const [commentOpen, setCommentOpen] = useState(false);
 
+  const queryClient = useQueryClient();
+
   const onChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
+  };
+
+  const writeMutate = useMutation((data: WriteComment) => postComment(data), {
+    onSuccess: () => {
+      setComment("");
+      queryClient.invalidateQueries("detail");
+    },
+    onError: () => {
+      alert("댓글 작성에 실패하였습니다");
+    },
+  });
+
+  const onSubmitComment = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const data = {
+      comment,
+      post_id: postId,
+      user_id: userId,
+    };
+
+    writeMutate.mutate(data);
   };
 
   return (
     <Container>
       <ToolWrapper>
         <CommentButton onClick={() => setCommentOpen(!commentOpen)}>
-          댓글
+          댓글 {comments.length}
         </CommentButton>
       </ToolWrapper>
 
       <CommentBox $open={commentOpen}>
-        <CommentHeader>댓글 0</CommentHeader>
+        <CommentHeader>댓글 {comments.length}</CommentHeader>
 
         <CommentBody>
-          <NoComment>
-            아직 댓글이 없습니다
-            <br />첫 댓글을 달아보세요!
-          </NoComment>
+          {comments ? (
+            comments.map((comment: Comment) => (
+              <CommentUI key={comment.id} comment={comment} userId={userId} />
+            ))
+          ) : (
+            <NoComment>
+              아직 댓글이 없습니다
+              <br />첫 댓글을 달아보세요!
+            </NoComment>
+          )}
         </CommentBody>
 
-        <CommentInput>
-          <CommentInputBox
-            placeholder="댓글을 입력해주세요"
-            value={comment}
-            onChange={onChangeComment}
-          />
-        </CommentInput>
+        <form onSubmit={onSubmitComment}>
+          <CommentInput>
+            <CommentInputBox
+              placeholder="댓글을 입력해주세요"
+              value={comment}
+              onChange={onChangeComment}
+              name="comment"
+            />
+          </CommentInput>
+
+          <CommentSubmit type="submit">등록</CommentSubmit>
+        </form>
       </CommentBox>
     </Container>
   );
@@ -81,7 +127,6 @@ const CommentBox = styled.div<{ $open: boolean }>`
 const CommentHeader = styled.div`
   display: flex;
   height: 40px;
-  padding-bottom: 1rem;
   border-bottom: 1px solid #a4a4a4;
   align-items: center;
 `;
@@ -121,4 +166,24 @@ const CommentInputBox = styled.textarea`
   border: 1px solid #a4a4a4;
   border-radius: 4px;
   resize: none;
+`;
+
+const CommentSubmit = styled.button`
+  width: 5rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  float: right;
+  cursor: pointer;
+  color: #fff;
+  font-size: 0.8rem;
+  background-color: #a4a4a4;
+  border: 1px solid #a4a4a4;
+  border-radius: 2rem;
+  margin-top: 0.5rem;
+
+  &:hover {
+    color: #000;
+  }
 `;
