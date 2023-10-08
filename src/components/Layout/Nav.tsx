@@ -79,7 +79,7 @@ const Nav = () => {
                     <UserImg src={userData.photo} alt="userImg" />
                     <UserMenu>
                       <UserMenuList
-                        onClick={() => navigate(`/user/${userData.id}`)}
+                        onClick={() => navigate(`/profile`)}
                       >
                         Profile
                       </UserMenuList>
