@@ -2,12 +2,15 @@ import styled from "styled-components";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
 import { useCallback, useRef, useState } from "react";
-import axios from "axios";
 import { useDispatch } from "react-redux";
-import { updateNickname, updatePhoto } from "../../store/userSlice";
+import { resetUser, updateNickname, updatePhoto } from "../../store/userSlice";
+import { useNavigate } from "react-router-dom"
+import { DeleteImg, GetImage } from "../../api/Photo/Photo";
+import { DeleteUser, UpdateProfile } from "../../api/User/User";
 
 
 const ProfileSettingPage = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   // input type="file"은 value를 사용할 수 없다.
   // inputRef를 사용해서 input type="file"의 value를 사용할 수 있다.
@@ -35,26 +38,20 @@ const ProfileSettingPage = () => {
     }
 
     // formData 생성 // id, _method 필수
-    const formData = new FormData();
-    formData.append('id', userData.id)
-    formData.append('_method', 'PATCH')
-    formData.append('nickname', nicknameValue);
-    formData.append('profile_image', profileImage);
-
-
-    axios.post('http://localhost:8000/api/user', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+    const formData = {
+      id: userData.id,
+      _method: 'PATCH',
+      nickname: nicknameValue,
+      profile_image: profileImage
+    }
+    
+    UpdateProfile(formData)
+    .then(response => {
+      console.log(response);
+      dispatch(updateNickname(nicknameValue));
+      dispatch(updatePhoto(profileImage));
     })
-      .then(response => {
-        console.log(response.data);
-        dispatch(updateNickname(nicknameValue));
-        dispatch(updatePhoto(profileImage));
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    
     // 업로드했던 이미지들 삭제
   };
 
@@ -64,30 +61,18 @@ const ProfileSettingPage = () => {
     if (!e.target.files) {
       return;
     }
-    // formData에 e.target.files[0]을 담아서 서버로 보내기
-    // const formData = new FormData();
-    // formData.append('id', userData.id)
-    // formData.append('profile_image', e.target.files[0]);
 
     const formData = {
       id: userData.id,
       profile_image: e.target.files[0]
     }
-    console.log(formData);
-
+    
     // axios로 서버로 보내기 (예정)
-    axios.post('http://localhost:8000/api/preview', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+    GetImage(formData)
       .then(response => {
-        console.log(response.data);
+        console.log(response);
         setProfileImage(response.data.profile_image);
       })
-      .catch(error => {
-        console.error(error);
-      });
 
   }, []);
 
@@ -101,25 +86,33 @@ const ProfileSettingPage = () => {
   }, []);
 
   const handleDeleteImg = () => {
+    if (profileImage === "https://cdn-icons-png.flaticon.com/512/3985/3985429.png") {
+      return alert("기본 이미지는 삭제할 수 없습니다.");
+    }
     const formData = {
       id: userData.id,
       _method: 'DELETE',
       profile_image: userData.photo
     }
-    // 업로드되어있는 이미지 aws s3에서 삭제 요청
-    axios.post('http://localhost:8000/api/preview', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+  
+    DeleteImg(formData)
+    .then(response => {
+      console.log(response);
+      setProfileImage("https://cdn-icons-png.flaticon.com/512/3985/3985429.png");
     })
-      .then(response => {
-        console.log(response.data);
-        setProfileImage('https://cdn-icons-png.flaticon.com/512/3985/3985429.png');
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    
+  }
 
+  const handleDeleteAccount = () => {
+    if (confirm("정말로 탈퇴하시겠습니까?.")) {
+      const formData = {
+        id: userData.id,
+      }
+      
+      DeleteUser(formData);
+      dispatch(resetUser());
+      navigate("/");
+    } 
     
   }
 
@@ -138,7 +131,7 @@ const ProfileSettingPage = () => {
       </ProfileChangeCon>
       <DecisionCon>
         <ChangeBtn  onClick={handleChangeClick}>변경</ChangeBtn>
-        <DeleteAccountBtn>회원탈퇴</DeleteAccountBtn>
+        <DeleteAccountBtn onClick={handleDeleteAccount} >회원탈퇴</DeleteAccountBtn>
       </DecisionCon>
     </Container>
   )

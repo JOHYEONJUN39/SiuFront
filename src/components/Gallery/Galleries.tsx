@@ -18,7 +18,7 @@ const Galleries = ({category} : GalleriesProps) => {
   
   useEffect(() =>{
     async function getTagContent() {
-      const data = await GetByTag(`#${category}`);
+      const data = await GetByTag(`#${category}`, '1');
       setTagContent(data.data.sort(() => 0.5 - Math.random()).slice(0,4));
       console.log(data);
     }
