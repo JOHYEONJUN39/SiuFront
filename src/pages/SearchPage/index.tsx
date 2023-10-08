@@ -66,9 +66,7 @@ const SearchPage = () => {
 
       {isFetching && <BeatLoader size={12} style={{ marginBottom: "1rem " }} />}
 
-      {data?.pages.length === 0 && isLoading === false && (
-        <NoResult>검색 결과가 없습니다.</NoResult>
-      )}
+      {!hasNextPage && <NoResult>검색 결과가 없습니다.</NoResult>}
     </Container>
   );
 };

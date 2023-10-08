@@ -3,13 +3,19 @@ import TagUI from "../common/TagUI";
 import { useTimeStamp } from "../../hooks/useTimeStamp";
 import { Post } from "../../types/Board.interface";
 import DOMPurify from "dompurify";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   data: Post;
 }
 
 const Search = ({ data }: Props) => {
+  const navigate = useNavigate();
   const timeAgo = useTimeStamp(data.created_at);
+
+  const onClick = () => {
+    navigate(`/posts/${data.id}`);
+  };
 
   return (
     <Container>
@@ -21,12 +27,14 @@ const Search = ({ data }: Props) => {
       </ImageBox>
 
       <Info>
-        <Title>{data.title}</Title>
-        <Description
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(data?.article || ""),
-          }}
-        ></Description>
+        <div onClick={onClick} style={{ cursor: "pointer" }}>
+          <Title>{data.title}</Title>
+          <Description
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(data?.article || ""),
+            }}
+          ></Description>
+        </div>
         <TagBox>
           {data.tags.map((tag) => {
             return <TagUI key={tag?.id} tag_name={tag.tag_name} />;
