@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "..";
 
 type LoginData = {
@@ -7,10 +8,18 @@ type LoginData = {
 
 export const useLogin = () => {
   const login = async (data: LoginData) => {
-    await api.get("sanctum/csrf-cookie");
+    try {
+      await axios.get("sanctum/csrf-cookie");
 
-    return await api.post("/api/login", data);
+      return await api.post("/api/login", data);
+    } catch (error) {
+      throw error;
+    }
   };
 
-  return { login };
+  const logout = async () => {
+    return await axios.post("/api/logout");
+  };
+
+  return { login, logout };
 };
