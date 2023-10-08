@@ -102,19 +102,19 @@ const DetailPage = () => {
                 <TagUI key={index} tag_name={tag} />
               ))}
             </TagBox>
-            {
-              // 로그인한 유저와 작성자가 같을 경우에만 수정, 삭제 버튼이 보인다
-              userData?.id === data?.user.id && (
-                <ToolBox>
-                  <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
-                  <EditButton onClick={handleEdit}>수정</EditButton>
-                </ToolBox>
-              )
-            }
           </HeaderWrapper>
         </Header>
 
         <Body ref={bodyRef}>
+          {
+            // 로그인한 유저와 작성자가 같을 경우에만 수정, 삭제 버튼이 보인다
+            userData?.id === data?.user.id && (
+              <ToolBox>
+                <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
+                <EditButton onClick={handleEdit}>수정</EditButton>
+              </ToolBox>
+            )
+          }
           <Article
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(data?.post.article || ""),
@@ -136,6 +136,10 @@ export default DetailPage;
 const Container = styled.div`
   min-width: 700px;
   margin: 0 auto;
+
+  @media (max-width: 700px) {
+    min-width: 0;
+  }
 `;
 
 const Header = styled.div`
@@ -172,6 +176,10 @@ const Title = styled.div`
   bottom: 0;
   right: 50%;
   transform: translate(50%, -10rem);
+
+  @media (max-width: 700px) {
+    width: 500px;
+  }
 `;
 
 const TitleText = styled.div`
@@ -190,6 +198,10 @@ const PostInfo = styled.div`
   right: 50%;
   color: #fff;
   transform: translate(50%, -4rem);
+
+  @media (max-width: 700px) {
+    width: 500px;
+  }
 
   & > .by {
     font-size: 0.8rem;
@@ -212,13 +224,17 @@ const PostInfo = styled.div`
 `;
 
 const ToolBox = styled.div`
-  position: absolute;
   display: flex;
-  flex-direction: row-reverse;
+  margin: 0 auto;
+  justify-content: flex-end;
   align-items: center;
+  z-index: 2;
   width: 700px;
-  right: 50%;
-  transform: translate(50%, -2.5rem);
+  color: #000;
+
+  @media (max-width: 700px) {
+    width: 500px;
+  }
 `;
 
 const TagBox = styled.div`
@@ -230,6 +246,10 @@ const TagBox = styled.div`
   color: #fff;
   transform: translate(50%, -3rem);
   z-index: 2;
+
+  @media (max-width: 700px) {
+    width: 500px;
+  }
 `;
 
 const Body = styled.div`
@@ -238,6 +258,10 @@ const Body = styled.div`
   background-color: #fff;
   height: 500vh;
   margin-bottom: 60px;
+
+  @media (max-width: 700px) {
+    width: 700px;
+  }
 `;
 
 const Article = styled.div`
@@ -249,6 +273,10 @@ const Article = styled.div`
   overflow: hidden;
   position: relative;
   z-index: 10;
+
+  @media (max-width: 700px) {
+    width: 500px;
+  }
 `;
 
 const DeleteButton = styled.div`
@@ -258,7 +286,7 @@ const DeleteButton = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #fff;
+  color: #868e96;
 
   &:hover {
     color: #000;
@@ -272,7 +300,7 @@ const EditButton = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #fff;
+  color: #868e96;
 
   &:hover {
     color: #000;
