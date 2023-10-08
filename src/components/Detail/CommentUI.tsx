@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { DeleteComment, EditWriteComment } from "../../types/Write.interface";
 import { deleteComment, editComment } from "../../api/Comment/comment";
+import { toast } from "react-toastify";
 
 interface Props {
   comment: Comment;
@@ -33,10 +34,11 @@ const CommentUI = ({ comment, userId }: Props) => {
     {
       onSuccess: () => {
         setEdit(false);
+        toast.success("수정되었습니다");
         queryClient.invalidateQueries("detail");
       },
       onError: () => {
-        alert("수정에 실패하였습니다");
+        toast.error("수정에 실패하였습니다");
       },
     }
   );
@@ -45,10 +47,11 @@ const CommentUI = ({ comment, userId }: Props) => {
     (data: DeleteComment) => deleteComment(data),
     {
       onSuccess: () => {
+        toast.success("삭제되었습니다");
         queryClient.invalidateQueries("detail");
       },
       onError: () => {
-        alert("삭제에 실패하였습니다");
+        toast.error("삭제에 실패하였습니다");
       },
     }
   );
