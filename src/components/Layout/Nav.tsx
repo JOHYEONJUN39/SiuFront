@@ -8,12 +8,18 @@ import { useDispatch } from "react-redux";
 import { showOpen } from "../../store/modalSlice";
 import SearchInput from "../Search/SearchInput";
 import { useEffect, useState } from "react";
+import { useMutation } from "react-query";
+import { useLogin } from "../../api/Sign/Login";
+import { toast } from "react-toastify";
+import { removeCookie } from "../../hooks/useCookie";
 
 const Nav = () => {
   const [detailePage, setDetailePage] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { logout } = useLogin();
 
   const setModal = useSelector((state: RootState) => state.modal);
   const userData = useSelector((state: RootState) => state.user);
@@ -29,6 +35,18 @@ const Nav = () => {
     }
   }, [location.pathname]);
 
+  const logoutMutation = useMutation(() => logout(), {
+    onSuccess: () => {
+      dispatch(resetUser());
+      removeCookie("XSRF-TOKEN");
+      navigate("/");
+      toast.success("로그아웃 되었습니다");
+    },
+    onError: () => {
+      toast.error("로그아웃에 실패하였습니다");
+    },
+  });
+
   // 모달 창 띄우기
   const handleModal = (modalType: string) => {
     dispatch(
@@ -39,8 +57,7 @@ const Nav = () => {
   };
 
   const handleLogOut = () => {
-    dispatch(resetUser());
-    navigate("/");
+    logoutMutation.mutate();
   };
 
   return (
