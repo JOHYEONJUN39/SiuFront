@@ -8,6 +8,9 @@ import TagInput from "../../components/Write/TagInput";
 import { useMutation, useQuery } from "react-query";
 import AllLoading from "../../components/Loading/AllLoading";
 import { EditWritePost, WritePost } from "../../types/Write.interface";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { toast } from "react-toastify";
 
 const WritePage = () => {
   const [title, setTitle] = useState<string>("");
@@ -17,6 +20,8 @@ const WritePage = () => {
   const quillRef = useRef<ReactQuill>(null);
   const query = new URLSearchParams(useLocation().search);
   const editQuery = query.get("post");
+
+  const user = useSelector((state: RootState) => state.user);
 
   const { data } = useQuery(
     ["post", editQuery],
@@ -59,11 +64,11 @@ const WritePage = () => {
 
   const wirteMutation = useMutation((post: WritePost) => Post(post), {
     onSuccess: () => {
-      alert("글 작성이 완료되었습니다.");
+      toast.success("글 작성이 완료되었습니다.");
       navigate("/");
     },
     onError: () => {
-      alert("글 작성에 실패했습니다.");
+      toast.error("글 작성에 실패했습니다.");
     },
   });
 
@@ -71,11 +76,11 @@ const WritePage = () => {
     (edit: EditWritePost) => EditPost(edit, Number(editQuery)),
     {
       onSuccess: () => {
-        alert("글 수정이 완료되었습니다.");
-        navigate(`/post/${editQuery}`);
+        toast.success("글 수정이 완료되었습니다.");
+        navigate(`/posts/${editQuery}`);
       },
       onError: () => {
-        alert("글 수정에 실패했습니다.");
+        toast.error("글 수정에 실패했습니다.");
       },
     }
   );
@@ -92,7 +97,7 @@ const WritePage = () => {
     }
 
     const writeData = {
-      user_id: "hetame",
+      user_id: user.id,
       title,
       article: content,
       tags,
