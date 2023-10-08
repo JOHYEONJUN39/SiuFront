@@ -1,6 +1,9 @@
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { RootState } from "../../store";
+import { useSelector } from "react-redux";
+import { GetPostUserId } from "../../api/Board/Post";
 
 type Post = {
   article: string;
@@ -16,16 +19,14 @@ type Post = {
 
 const ProfilePostPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
+  const userData = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
-      axios.get('http://localhost:8000/api/posts/users/hetame')
+      GetPostUserId(userData.id)
       .then(response => {
-        console.log(response.data);
+        console.log(response);
         setPosts(response.data.data.reverse());
       })
-      .catch(error => {
-        console.error(error);
-      });
     }
     , [])
     
@@ -39,7 +40,7 @@ const ProfilePostPage = () => {
             <PostTitle>{post.title}</PostTitle>
             <Post>{post.article.replace(/<\/?p>/g, '')}</Post>
             {
-              post.tag_name.length >= 1
+              post.tag_name
               ?
               <TagCon>
               {post.tag_name.map((tag, index) => (
