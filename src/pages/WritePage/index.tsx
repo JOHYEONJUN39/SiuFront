@@ -140,11 +140,17 @@ const WritePage = () => {
 
 export default WritePage;
 
-const Container = styled.div``;
+const Container = styled.div`
+  max-width: 1240px;
+
+  @media (max-width: 700px) {
+    max-width: 500px;
+  }
+`;
 
 const TitleInput = styled.input`
-  width: 100%;
-  height: 4rem;
+  width: 1240px;
+  min-height: 4rem;
   border: 1px solid #ccc;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
@@ -152,6 +158,10 @@ const TitleInput = styled.input`
   padding: 0 1rem;
   box-sizing: border-box;
   font-weight: bold;
+
+  @media (max-width: 700px) {
+    width: 700px;
+  }
 `;
 
 const WriteBottom = styled.div`
