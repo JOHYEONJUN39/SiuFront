@@ -49,6 +49,8 @@ const GalleryItemTitle = styled.div`
   width: 100%;
   height: 80px;
   font-size: 1rem;
+  display: flex;
+  justify-content: center;
   line-height: 1.3;
   border-radius: 0 0 30px 30px;
   box-sizing: border-box;

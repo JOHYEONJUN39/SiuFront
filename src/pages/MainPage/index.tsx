@@ -4,7 +4,7 @@ import TopButton from "../../components/TopButton";
 
 const tagName = [
   "테스트",
-  "ㅇㅈ",
+  "여행",
   "엄준식"
 ]
 
