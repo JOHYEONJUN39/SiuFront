@@ -3,9 +3,18 @@ import { Comment } from "../../types/Board.interface";
 import { useTimeStamp } from "../../hooks/useTimeStamp";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { DeleteComment, EditWriteComment } from "../../types/Write.interface";
-import { deleteComment, editComment } from "../../api/Comment/comment";
+import {
+  DeleteComment,
+  EditWriteComment,
+  LikeComment,
+} from "../../types/Write.interface";
+import {
+  deleteComment,
+  editComment,
+  likeComment,
+} from "../../api/Comment/comment";
 import { toast } from "react-toastify";
+import { AiOutlineHeart } from "react-icons/ai";
 
 interface Props {
   comment: Comment;
@@ -56,12 +65,21 @@ const CommentUI = ({ comment, userId }: Props) => {
     }
   );
 
+  const likeMutation = useMutation((data: LikeComment) => likeComment(data), {
+    onSuccess: () => {
+      toast.success("좋아요");
+      queryClient.invalidateQueries("detail");
+    },
+    onError: () => {
+      toast.error("좋아요 실패");
+    },
+  });
+
   const handleEdit = () => {
     const data = {
       comment_id: comment.id,
       comment: editCommentText,
     };
-    console.log(data);
 
     editMutation.mutate(data);
   };
@@ -74,6 +92,15 @@ const CommentUI = ({ comment, userId }: Props) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
     deleteMutation.mutate(data);
+  };
+
+  const handleLike = () => {
+    const data = {
+      comment_id: comment.id,
+      user_id: userId,
+    };
+
+    likeMutation.mutate(data);
   };
 
   return (
@@ -109,6 +136,10 @@ const CommentUI = ({ comment, userId }: Props) => {
         ) : (
           <Content>{comment.comment}</Content>
         )}
+
+        <CommentLike onClick={handleLike}>
+          <AiOutlineHeart />
+        </CommentLike>
       </CommentBody>
     </Container>
   );
@@ -163,15 +194,18 @@ const CommentUser = styled.div`
 
 const CommentBody = styled.div`
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: 1.2rem;
   margin-top: 1rem;
 `;
 
 const Content = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   align-items: center;
+  word-wrap: break-word;
+  white-space: pre-line;
 `;
 
 const EditBox = styled.div`
@@ -222,4 +256,12 @@ const ToolBox = styled.div`
     color: #a4a4a4;
     cursor: pointer;
   }
+`;
+
+const CommentLike = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  cursor: pointer;
 `;
