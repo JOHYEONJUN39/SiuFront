@@ -92,25 +92,17 @@ const DetailPage = () => {
             </Title>
 
             <PostInfo>
-              <div className="by">by</div>{" "}
-              <div className="user-name">{data?.user.nickname}</div>{" "}
-              <div className="date">{timeAgo}</div>
+              <Info>
+                <div className="by">by</div>{" "}
+                <div className="user-name">{data?.user.nickname}</div>{" "}
+                <div className="date">{timeAgo}</div>
+              </Info>
+              <TagBox>
+                {data?.tags.map((tag: string, index: number) => (
+                  <TagUI key={index} tag_name={tag} />
+                ))}
+              </TagBox>
             </PostInfo>
-
-            <TagBox>
-              {data?.tags.map((tag: string, index: number) => (
-                <TagUI key={index} tag_name={tag} />
-              ))}
-            </TagBox>
-            {
-              // 로그인한 유저와 작성자가 같을 경우에만 수정, 삭제 버튼이 보인다
-              userData?.id === data?.user.id && (
-                <ToolBox>
-                  <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
-                  <EditButton onClick={handleEdit}>수정</EditButton>
-                </ToolBox>
-              )
-            }
           </HeaderWrapper>
         </Header>
 
@@ -120,6 +112,15 @@ const DetailPage = () => {
               __html: DOMPurify.sanitize(data?.post.article || ""),
             }}
           />
+          {
+            // 로그인한 유저와 작성자가 같을 경우에만 수정, 삭제 버튼이 보인다
+            userData?.id === data?.user.id && (
+              <ToolBox>
+                <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
+                <EditButton onClick={handleEdit}>수정</EditButton>
+              </ToolBox>
+            )
+          }
           <Footer
             postId={Number(postId)}
             userId={userData?.id}
@@ -136,6 +137,10 @@ export default DetailPage;
 const Container = styled.div`
   min-width: 700px;
   margin: 0 auto;
+
+  @media (max-width: 700px) {
+    min-width: 0;
+  }
 `;
 
 const Header = styled.div`
@@ -172,6 +177,10 @@ const Title = styled.div`
   bottom: 0;
   right: 50%;
   transform: translate(50%, -10rem);
+
+  @media (max-width: 700px) {
+    width: 500px;
+  }
 `;
 
 const TitleText = styled.div`
@@ -183,13 +192,21 @@ const TitleText = styled.div`
 
 const PostInfo = styled.div`
   position: absolute;
-  display: flex;
   align-items: center;
   width: 700px;
-  bottom: 0;
+  bottom: 0.5rem;
   right: 50%;
   color: #fff;
-  transform: translate(50%, -4rem);
+  transform: translateX(50%);
+
+  @media (max-width: 700px) {
+    width: 500px;
+  }
+`;
+
+const Info = styled.div`
+  display: flex;
+  margin-bottom: 1rem;
 
   & > .by {
     font-size: 0.8rem;
@@ -211,25 +228,16 @@ const PostInfo = styled.div`
   }
 `;
 
-const ToolBox = styled.div`
-  position: absolute;
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  width: 700px;
-  right: 50%;
-  transform: translate(50%, -2.5rem);
-`;
-
 const TagBox = styled.div`
-  position: absolute;
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   width: 700px;
-  right: 50%;
   color: #fff;
-  transform: translate(50%, -3rem);
   z-index: 2;
+
+  @media (max-width: 700px) {
+    width: 500px;
+  }
 `;
 
 const Body = styled.div`
@@ -238,17 +246,39 @@ const Body = styled.div`
   background-color: #fff;
   height: 500vh;
   margin-bottom: 60px;
+  padding-top: 1rem;
+
+  @media (max-width: 700px) {
+    width: 700px;
+  }
 `;
 
 const Article = styled.div`
   width: 700px;
   text-align: left;
   margin: 0 auto;
-  padding-top: 50px;
   background: #fff;
   overflow: hidden;
   position: relative;
   z-index: 10;
+
+  @media (max-width: 700px) {
+    width: 500px;
+  }
+`;
+
+const ToolBox = styled.div`
+  display: flex;
+  margin: 0 auto;
+  justify-content: flex-end;
+  align-items: center;
+  z-index: 2;
+  width: 700px;
+  color: #000;
+
+  @media (max-width: 700px) {
+    width: 500px;
+  }
 `;
 
 const DeleteButton = styled.div`
@@ -258,7 +288,7 @@ const DeleteButton = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #fff;
+  color: #868e96;
 
   &:hover {
     color: #000;
@@ -272,7 +302,7 @@ const EditButton = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #fff;
+  color: #868e96;
 
   &:hover {
     color: #000;

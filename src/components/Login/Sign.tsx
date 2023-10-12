@@ -61,6 +61,7 @@ const Sign = () => {
     {
       onSuccess: () => {
         alert("회원가입이 완료되었습니다.");
+        loginMutation.mutate({ id: userId, password });
       },
       onError: (e) => {
         console.log(e);

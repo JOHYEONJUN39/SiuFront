@@ -25,3 +25,8 @@ export interface EditWriteComment {
 export interface DeleteComment {
   comment_id: number;
 }
+
+export interface LikeComment {
+  comment_id: number;
+  user_id: string;
+}

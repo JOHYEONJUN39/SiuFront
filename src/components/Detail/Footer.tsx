@@ -5,6 +5,7 @@ import CommentUI from "./CommentUI";
 import { useMutation, useQueryClient } from "react-query";
 import { WriteComment } from "../../types/Write.interface";
 import { postComment } from "../../api/Comment/comment";
+import { toast } from "react-toastify";
 
 interface Props {
   postId: number;
@@ -25,10 +26,11 @@ const Footer = ({ postId, userId, comments }: Props) => {
   const writeMutate = useMutation((data: WriteComment) => postComment(data), {
     onSuccess: () => {
       setComment("");
+      toast.success("댓글 작성에 성공하였습니다");
       queryClient.invalidateQueries("detail");
     },
     onError: () => {
-      alert("댓글 작성에 실패하였습니다");
+      toast.error("댓글 작성에 실패하였습니다");
     },
   });
 
@@ -93,6 +95,10 @@ const Container = styled.div`
   padding: 32px 0;
   border-top: 1px solid #a4a4a4;
   margin-top: 2rem;
+
+  @media (max-width: 700px) {
+    width: 500px;
+  }
 `;
 
 const ToolWrapper = styled.div`

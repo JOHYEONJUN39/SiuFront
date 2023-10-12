@@ -1,4 +1,4 @@
-import api from "..";
+import axios from "axios";
 
 type RegisterData = {
   id: string;
@@ -7,7 +7,5 @@ type RegisterData = {
 };
 
 export const register = async (data: RegisterData) => {
-  console.log(data);
-
-  return await api.post("/api/register", data);
+  return await axios.post("/api/register", data);
 };

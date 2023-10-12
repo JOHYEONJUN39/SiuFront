@@ -43,6 +43,7 @@ const Tag = styled.div`
   color: #a9a9f5;
   font-weight: 600;
   margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
   cursor: pointer;
   z-index: 10;
 `;

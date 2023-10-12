@@ -3,13 +3,32 @@ import TagUI from "../common/TagUI";
 import { useTimeStamp } from "../../hooks/useTimeStamp";
 import { Post } from "../../types/Board.interface";
 import DOMPurify from "dompurify";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   data: Post;
 }
 
 const Search = ({ data }: Props) => {
+  const navigate = useNavigate();
   const timeAgo = useTimeStamp(data.created_at);
+
+  const onClick = () => {
+    navigate(`/posts/${data.id}`);
+  };
+
+  const summarize = (str: string) => {
+    if (str.includes("<p>")) {
+      const index = str.indexOf("<p>");
+      return str.slice(0, index);
+    }
+    if (str.length > 50) {
+      return str.slice(0, 50) + "...";
+    }
+    return str;
+  };
+
+  const summary = summarize(data.article);
 
   return (
     <Container>
@@ -21,12 +40,14 @@ const Search = ({ data }: Props) => {
       </ImageBox>
 
       <Info>
-        <Title>{data.title}</Title>
-        <Description
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(data?.article || ""),
-          }}
-        ></Description>
+        <div onClick={onClick} style={{ cursor: "pointer" }}>
+          <Title>{data.title}</Title>
+          <Description
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(summary || ""),
+            }}
+          ></Description>
+        </div>
         <TagBox>
           {data.tags.map((tag) => {
             return <TagUI key={tag?.id} tag_name={tag.tag_name} />;
@@ -42,7 +63,7 @@ export default Search;
 
 const Container = styled.div`
   width: 1200px;
-  height: 220px;
+  min-height: 220px;
   display: flex;
   border: 1px solid #eee;
   box-sizing: border-box;
@@ -50,12 +71,18 @@ const Container = styled.div`
   align-items: center;
   position: relative;
   margin-bottom: 3rem;
+
+  h1,
+  h2,
+  h3 {
+    font-size: 100%;
+    font-weight: normal;
+  }
 `;
 
 const ImageBox = styled.div`
-  width: 170px;
-  height: 170px;
-  margin: 20px;
+  width: 200px;
+  margin: 1rem;
 `;
 
 const Image = styled.img`
@@ -66,10 +93,13 @@ const Image = styled.img`
 `;
 
 const Info = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
+  justify-content: center;
   flex-direction: column;
-  margin-left: 10px;
-  margin-bottom: 5rem;
+  margin-left: 1rem;
+  margin-bottom: 2rem;
 `;
 
 const Title = styled.div`
@@ -85,9 +115,10 @@ const Description = styled.div`
 
 const TagBox = styled.div`
   display: flex;
-  margin-top: 1rem;
+  max-width: 900px;
+  flex-wrap: wrap;
   position: absolute;
-  bottom: 1.5rem;
+  bottom: 0.5rem;
 `;
 
 const Date = styled.div`
