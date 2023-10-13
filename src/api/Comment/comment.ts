@@ -1,6 +1,7 @@
 import api from "..";
 import {
   DeleteComment,
+  DisLikeComment,
   EditWriteComment,
   LikeComment,
   WriteComment,
@@ -26,6 +27,6 @@ export const likeComment = async (likeComment: LikeComment) => {
   return await api.post(`/api/comment/like`, likeComment);
 };
 
-export const unlikeComment = async (id: number) => {
-  return await api.delete(`/api/comment/unlike`, { data: { id } });
+export const unlikeComment = async (disLikeComment: DisLikeComment) => {
+  return await api.delete(`/api/comment/unlike`, { data: disLikeComment });
 };

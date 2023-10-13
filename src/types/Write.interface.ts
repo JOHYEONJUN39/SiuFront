@@ -30,3 +30,8 @@ export interface LikeComment {
   comment_id: number;
   user_id: string;
 }
+
+export interface DisLikeComment {
+  comment_id: number;
+  user_id: string;
+}

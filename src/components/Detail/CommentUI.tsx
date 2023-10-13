@@ -2,9 +2,12 @@ import styled from "styled-components";
 import { Comment } from "../../types/Board.interface";
 import { useTimeStamp } from "../../hooks/useTimeStamp";
 import { useState } from "react";
+import { AiOutlineHeart } from "react-icons/ai";
+import { FcLike } from "react-icons/fc";
 import { useMutation, useQueryClient } from "react-query";
 import {
   DeleteComment,
+  DisLikeComment,
   EditWriteComment,
   LikeComment,
 } from "../../types/Write.interface";
@@ -12,9 +15,9 @@ import {
   deleteComment,
   editComment,
   likeComment,
+  unlikeComment,
 } from "../../api/Comment/comment";
 import { toast } from "react-toastify";
-import { AiOutlineHeart } from "react-icons/ai";
 
 interface Props {
   comment: Comment;
@@ -25,17 +28,13 @@ const CommentUI = ({ comment, userId }: Props) => {
   const [edit, setEdit] = useState<boolean>(false);
   const [editCommentText, setEditCommentText] = useState<string>("");
 
-  const timeAgo = useTimeStamp(comment.created_at);
-
   const queryClient = useQueryClient();
+
+  const timeAgo = useTimeStamp(comment.created_at);
 
   const changeEdit = () => {
     setEdit(!edit);
     setEditCommentText(comment.comment);
-  };
-
-  const handleComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setEditCommentText(e.target.value);
   };
 
   const editMutation = useMutation(
@@ -67,13 +66,28 @@ const CommentUI = ({ comment, userId }: Props) => {
 
   const likeMutation = useMutation((data: LikeComment) => likeComment(data), {
     onSuccess: () => {
-      toast.success("좋아요");
       queryClient.invalidateQueries("detail");
     },
     onError: () => {
       toast.error("좋아요 실패");
     },
   });
+
+  const disLikeMutation = useMutation(
+    (data: DisLikeComment) => unlikeComment(data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("detail");
+      },
+      onError: () => {
+        toast.error("좋아요 취소 실패");
+      },
+    }
+  );
+
+  const handleComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setEditCommentText(e.target.value);
+  };
 
   const handleEdit = () => {
     const data = {
@@ -101,6 +115,15 @@ const CommentUI = ({ comment, userId }: Props) => {
     };
 
     likeMutation.mutate(data);
+  };
+
+  const handleDisLike = () => {
+    const data = {
+      comment_id: comment.id,
+      user_id: userId,
+    };
+
+    disLikeMutation.mutate(data);
   };
 
   return (
@@ -137,9 +160,17 @@ const CommentUI = ({ comment, userId }: Props) => {
           <Content>{comment.comment}</Content>
         )}
 
-        <CommentLike onClick={handleLike}>
-          <AiOutlineHeart />
-        </CommentLike>
+        {comment.liked ? (
+          <CommentLike onClick={handleDisLike}>
+            <FcLike />
+            <div className="like__count">{comment.like_count}</div>
+          </CommentLike>
+        ) : (
+          <CommentLike onClick={handleLike}>
+            <AiOutlineHeart />
+            <div className="like__count">{comment.like_count}</div>
+          </CommentLike>
+        )}
       </CommentBody>
     </Container>
   );
@@ -239,6 +270,7 @@ const EditButton = styled.div`
   background-color: #f2f2f2;
   color: #a4a4a4;
   font-weight: 600;
+  margin-right: 0.2rem;
 `;
 
 const ToolBox = styled.div`
@@ -260,8 +292,32 @@ const ToolBox = styled.div`
 
 const CommentLike = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-right: 1rem;
+  margin-bottom: 0;
   cursor: pointer;
+
+  & > svg {
+    animation: bounce 0.5s linear;
+  }
+
+  & > .like__count {
+    font-size: 0.7rem;
+    margin-top: 0.2rem;
+    color: #a4a4a4;
+  }
+
+  @keyframes bounce {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
 `;
