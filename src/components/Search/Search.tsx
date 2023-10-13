@@ -4,6 +4,7 @@ import { useTimeStamp } from "../../hooks/useTimeStamp";
 import { Post } from "../../types/Board.interface";
 import DOMPurify from "dompurify";
 import { useNavigate } from "react-router-dom";
+import { useSummary } from "../../hooks/useSummary";
 
 interface Props {
   data: Post;
@@ -16,19 +17,6 @@ const Search = ({ data }: Props) => {
   const onClick = () => {
     navigate(`/posts/${data.id}`);
   };
-
-  const summarize = (str: string) => {
-    if (str.includes("<p>")) {
-      const index = str.indexOf("<p>");
-      return str.slice(0, index);
-    }
-    if (str.length > 50) {
-      return str.slice(0, 50) + "...";
-    }
-    return str;
-  };
-
-  const summary = summarize(data.article);
 
   return (
     <Container>
@@ -44,7 +32,7 @@ const Search = ({ data }: Props) => {
           <Title>{data.title}</Title>
           <Description
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(summary || ""),
+              __html: DOMPurify.sanitize(useSummary(data.article) || ""),
             }}
           ></Description>
         </div>
@@ -109,8 +97,10 @@ const Title = styled.div`
 
 const Description = styled.div`
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
+  padding-left: 0.3rem;
   margin-top: 1.5rem;
+  margin-bottom: 2rem;
 `;
 
 const TagBox = styled.div`
