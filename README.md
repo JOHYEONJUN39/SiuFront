@@ -22,10 +22,10 @@
 
 ## Members 👤
 
-|                 김지훈                 |                      조현준                      |               김현               |                 유대한                 |
-| :------------------------------------: | :----------------------------------------------: | :------------------------------: | :------------------------------------: |
-|                  img                   |                       img                        |               img                |                  img                   |
-| [@hetame1](https://github.com/hetame1) | [@JOHYEONJUN39](https://github.com/JOHYEONJUN39) | [@Hyn2](https://github.com/Hyn2) | [@Ydaehan](https://github.com/Ydaehan) |
+|                                                               김지훈                                                               |                                                               조현준                                                               |                                                                김현                                                                |                                                               유대한                                                               |
+| :--------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------: |
+| <img width="200px" src="https://github.com/Newbiesiuuuu/Frontend/assets/121005861/9c8e8a70-8d43-48bf-9fbb-6394c2de2791" alt="img"> | <img width="200px" src="https://github.com/Newbiesiuuuu/Frontend/assets/121005861/31fcb66c-670c-40b6-a03f-c38597ac053c" alt="img"> | <img width="200px" src="https://github.com/Newbiesiuuuu/Frontend/assets/121005861/446c6ffd-4751-43b9-9815-367c47db372f" alt="img"> | <img width="200px" src="https://github.com/Newbiesiuuuu/Frontend/assets/121005861/1e7c0057-f8ac-41e2-9258-f5c853afeb92" alt="img"> |
+|                                               [@hetame1](https://github.com/hetame1)                                               |                                          [@JOHYEONJUN39](https://github.com/JOHYEONJUN39)                                          |                                                  [@Hyn2](https://github.com/Hyn2)                                                  |                                               [@Ydaehan](https://github.com/Ydaehan)                                               |
 
 ## Stacks 📚
 
