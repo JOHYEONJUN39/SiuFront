@@ -22,10 +22,10 @@
 
 ## Members 👤
 
-|                  김지훈                  |                       조현준                       |                김현                |                  유대한                  |
-| :--------------------------------------: | :------------------------------------------------: | :--------------------------------: | :--------------------------------------: |
-|                   img                    |                        img                         |                img                 |                   img                    |
-| [@hetame1]("https://github.com/hetame1") | [@JOHYEONJUN39]("https://github.com/JOHYEONJUN39") | [@Hyn2]("https://github.com/Hyn2") | [@Ydaehan]("https://github.com/Ydaehan") |
+|                 김지훈                 |                      조현준                      |               김현               |                 유대한                 |
+| :------------------------------------: | :----------------------------------------------: | :------------------------------: | :------------------------------------: |
+|                  img                   |                       img                        |               img                |                  img                   |
+| [@hetame1](https://github.com/hetame1) | [@JOHYEONJUN39](https://github.com/JOHYEONJUN39) | [@Hyn2](https://github.com/Hyn2) | [@Ydaehan](https://github.com/Ydaehan) |
 
 ## Stacks 📚
 
