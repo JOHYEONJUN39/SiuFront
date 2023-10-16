@@ -8,3 +8,7 @@ export interface DeletePhoto {
   _method: string;
   profile_image: string;
 }
+
+export interface GetPath {
+  image: File | undefined;
+}

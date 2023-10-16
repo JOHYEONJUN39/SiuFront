@@ -1,25 +1,23 @@
 import DOMPurify from "dompurify";
 import { styled } from "styled-components"
-
-type Post = {
-  article: string;
-  id: number;
-  title: string;
-  tag_name: [key: string];
-  created_at: string;
-  updated_at: string;
-  user_id: string;
-  view: number;
-};
+import { articleToThumbnail } from "../../hooks/articleToThumbnail";
+import { useNavigate } from "react-router-dom";
+import { Post } from "../../types/PostData.interface";
 
 const GalleryItem = ({content} : {content : Post}) => {
+  const navigate = useNavigate();
   const article = content.article;
   const displayedTitleText = article.length > 50 ? `${article.substring(0,50)}...` : article;
   
+  const navigatePost = () => {
+    navigate(`/posts/${content.id}`);
+  }
+  
+
   return (
-    <GalleryItems>
+    <GalleryItems onClick={navigatePost}>
       <GalleryItemImageCon>
-        <GalleryItemImage src="https://resize.blogsys.jp/c3cd8a2c434824d88dc3a9b1397c7954d3ff3857/crop1/343x343/https://livedoor.blogimg.jp/shibainu_donguri/imgs/a/8/a875be26.png" alt="" />
+        <GalleryItemImage src={articleToThumbnail(content.article)} alt="" />
       </GalleryItemImageCon>
       <GalleryItemTitle 
         dangerouslySetInnerHTML={{

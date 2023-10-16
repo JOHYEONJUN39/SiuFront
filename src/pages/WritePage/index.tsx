@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
@@ -11,8 +11,41 @@ import { EditWritePost, WritePost } from "../../types/Write.interface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { toast } from "react-toastify";
+import { useMemo } from "react";
+import ImageResize from "quill-image-resize-module-react";
+import { GetImagePath } from "../../api/Photo/Photo";
+
+Quill.register("modules/imageResize", ImageResize);
 
 const WritePage = () => {
+  
+  const imageHandler = async () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+    input.addEventListener("change", async () => {
+      //이미지를 담아 전송할 file을 만든다
+      const formData = {
+        image: input.files?.[0],
+      }
+      try {
+        // 이미지 업로드 요청
+        const IMG_URL = await GetImagePath(formData);
+        console.log(IMG_URL);
+        //useRef를 사용해 에디터에 접근한 후
+        //에디터의 현재 커서 위치에 이미지 삽입
+        const editor = quillRef.current?.getEditor();
+        const range = editor?.getSelection();
+        // 가져온 위치에 이미지를 삽입한다
+        if (range)
+        editor?.insertEmbed(range.index, "image", IMG_URL.data.image_path);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  };
+
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
@@ -48,15 +81,26 @@ const WritePage = () => {
 
   const navigate = useNavigate();
 
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image"],
-      ["clean"],
-    ],
-  };
+  const modules = useMemo(() => {
+    return {
+      toolbar: {
+        container: [
+          [{ 'header': [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          ['link', 'image'],
+          ['clean']
+        ], 
+        handlers: {
+          image: imageHandler,
+        },
+      },
+      imageResize: {
+        parchment: Quill.import("parchment"),
+        modules: ["Resize", "DisplaySize", "Toolbar"],
+      },
+    };
+  }, []);
 
   const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
