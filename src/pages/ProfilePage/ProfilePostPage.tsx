@@ -4,53 +4,63 @@ import styled from "styled-components";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
 import { GetPostUserId } from "../../api/Board/Post";
+import { articleToThumbnail } from "../../hooks/articleToThumbnail";
+
+type Pivot = {
+  post_id: number;
+  tag_id: number;
+};
+
+type Tag = {
+  created_at: string;
+  id: number;
+  pivot: Pivot;
+  tag_name: string;
+  updated_at: string;
+};
 
 type Post = {
   article: string;
   id: number;
   title: string;
-  tag_name: [key: string];
+  tags: Tag[];
   created_at: string;
   updated_at: string;
   user_id: string;
-  view: number;
+  view: number; 
 };
-
 
 const ProfilePostPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const userData = useSelector((state: RootState) => state.user);
-
-    useEffect(() => {
-      GetPostUserId(userData.id)
-      .then(response => {
-        console.log(response);
-        setPosts(response.data.data.reverse());
-      })
+  useEffect(() => {
+    GetPostUserId(userData.id)
+    .then(response => {
+      console.log(response);
+      setPosts(response.data.data.reverse());
+    })
     }
     , [])
-    
+  
   return (
     <Container>
       <ProfileChangeCon>
 
         {posts.map((post) => (
           <PostCon key={post.id}>
-            <PostImg src="https://i.ytimg.com/vi/ac6d5rCJj5w/maxresdefault.jpg" />
+            <img src={articleToThumbnail(post.article)} alt="" />
             <PostTitle>{post.title}</PostTitle>
-            <Post>{post.article.replace(/<\/?p>/g, '')}</Post>
+            <Post>{post.article.replace(/<img[^>]*>/g, '').replace(/<\/?p>/g, '')}</Post>
             {
-              post.tag_name
+              post.tags && post.tags.length > 0
               ?
               <TagCon>
-              {post.tag_name.map((tag, index) => (
-                <Tag key={index}>{tag}</Tag>
-              ))}
+                {post.tags.map((tag, index) => (
+                  <Tag key={index}>{tag.tag_name}</Tag>
+                ))}
               </TagCon>
               : null
             }
-            
-
             <PostFoot>
               <Date>{post.created_at.slice(0,10)}</Date>
               <View>조회수 : {post.view}</View>
@@ -89,12 +99,18 @@ const PostCon = styled.div`
   background-color: #F8F9FA;
   padding : 1rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  div {
+    img {
+      width: 100%;
+      height: 550px;
+    }
+  }
 `
 
-const PostImg = styled.img`
-  width: 100%;
-  height: 75%;
-`
+// const PostImg = styled.img`
+//   width: 100%;
+//   height: 75%;
+// `
 
 const PostTitle = styled.p`
   font-size: 2rem;
