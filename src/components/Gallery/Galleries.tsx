@@ -3,16 +3,8 @@ import GalleryItem from "./GalleryItem"
 import type GalleriesProps from "../../types/Galleries.interface"
 import { useEffect, useState } from "react"
 import { GetByTag } from "../../api/Search/Search"
-type Post = {
-  article: string;
-  id: number;
-  title: string;
-  tag_name: [key: string];
-  created_at: string;
-  updated_at: string;
-  user_id: string;
-  view: number;
-};
+import { Post } from "../../types/PostData.interface"
+
 const Galleries = ({category} : GalleriesProps) => {
   const [tagContent, setTagContent] = useState<Post[]>([]);
   
