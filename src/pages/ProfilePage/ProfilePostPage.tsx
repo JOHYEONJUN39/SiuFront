@@ -5,6 +5,8 @@ import { RootState } from "../../store";
 import { useSelector } from "react-redux";
 import { GetPostUserId } from "../../api/Board/Post";
 import { articleToThumbnail } from "../../hooks/articleToThumbnail";
+import { useNavigate } from "react-router-dom";
+import Pagination from "../../components/Profile/Pagination";
 
 type Pivot = {
   post_id: number;
@@ -30,17 +32,55 @@ type Post = {
   view: number; 
 };
 
+interface PaginationData {
+  current_page: number;
+  data: Post[];
+  first_page_url: string;
+  from: number;
+  last_page: number;
+  last_page_url: string;
+  next_page_url: string | null;
+  path: string;
+  per_page: number;
+  prev_page_url?: string | null;
+  to: number;
+  total: number;
+}
+
 const ProfilePostPage = () => {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
+  const [pages, setPages] = useState<PaginationData>();
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const userData = useSelector((state: RootState) => state.user);
   useEffect(() => {
-    GetPostUserId(userData.id)
+    GetPostUserId(`${userData.id}?page=${currentPage}`)
     .then(response => {
       console.log(response);
       setPosts(response.data.data.reverse());
+      setPages(response.data);
     })
     }
-    , [])
+    , [currentPage])
+
+  const handlePageChange = (newPage : number) =>{
+    setCurrentPage(newPage); 
+    window.scrollTo(0, 0);
+  }
+
+  const navigatePost = (id : number) => {
+    navigate(`/posts/${id}`);
+  }
+
+  function replace(url: string) {
+    url = encodeURIComponent(url);
+    return url;
+  }
+
+  const handleTagSearch = (tag: string) => {
+    const encodedTag = replace(tag);
+    navigate(`/search?query=${encodedTag}`);
+  };
   
   return (
     <Container>
@@ -48,7 +88,7 @@ const ProfilePostPage = () => {
 
         {posts.map((post) => (
           <PostCon key={post.id}>
-            <img src={articleToThumbnail(post.article)} alt="" />
+            <img src={articleToThumbnail(post.article)} alt="" style={{ width: 'auto', height: '500px' }} onClick={() => navigatePost(post.id)}/>
             <PostTitle>{post.title}</PostTitle>
             <Post>{post.article.replace(/<img[^>]*>/g, '').replace(/<\/?p>/g, '')}</Post>
             {
@@ -56,7 +96,7 @@ const ProfilePostPage = () => {
               ?
               <TagCon>
                 {post.tags.map((tag, index) => (
-                  <Tag key={index}>{tag.tag_name}</Tag>
+                  <Tag key={index} onClick={() => handleTagSearch(tag.tag_name)} >{tag.tag_name}</Tag>
                 ))}
               </TagCon>
               : null
@@ -68,6 +108,8 @@ const ProfilePostPage = () => {
           </PostCon>
         ))}
       </ProfileChangeCon>
+    
+      {pages && <Pagination currentPage={currentPage} totalPages={pages.last_page} onPageChange={handlePageChange}/>}
     </Container>
   )
 }
@@ -106,12 +148,6 @@ const PostCon = styled.div`
     }
   }
 `
-
-// const PostImg = styled.img`
-//   width: 100%;
-//   height: 75%;
-// `
-
 const PostTitle = styled.p`
   font-size: 2rem;
   font-weight: bold;
