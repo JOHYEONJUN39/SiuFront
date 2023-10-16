@@ -7,45 +7,9 @@ import { GetPostUserId } from "../../api/Board/Post";
 import { articleToThumbnail } from "../../hooks/articleToThumbnail";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/Profile/Pagination";
+import { PaginationData, Post } from "../../types/PostData.interface";
 
-type Pivot = {
-  post_id: number;
-  tag_id: number;
-};
 
-type Tag = {
-  created_at: string;
-  id: number;
-  pivot: Pivot;
-  tag_name: string;
-  updated_at: string;
-};
-
-type Post = {
-  article: string;
-  id: number;
-  title: string;
-  tags: Tag[];
-  created_at: string;
-  updated_at: string;
-  user_id: string;
-  view: number; 
-};
-
-interface PaginationData {
-  current_page: number;
-  data: Post[];
-  first_page_url: string;
-  from: number;
-  last_page: number;
-  last_page_url: string;
-  next_page_url: string | null;
-  path: string;
-  per_page: number;
-  prev_page_url?: string | null;
-  to: number;
-  total: number;
-}
 
 const ProfilePostPage = () => {
   const navigate = useNavigate();
