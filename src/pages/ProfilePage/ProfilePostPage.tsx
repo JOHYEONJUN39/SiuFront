@@ -54,7 +54,7 @@ const ProfilePostPage = () => {
           <PostCon key={post.id}>
             <img src={articleToThumbnail(post.article)} alt="" style={{ width: 'auto', height: '500px' }} onClick={() => navigatePost(post.id)}/>
             <PostTitle>{post.title}</PostTitle>
-            <Post>{post.article.replace(/<img[^>]*>/g, '').replace(/<\/?p>/g, '')}</Post>
+            <PostArticle>{post.article.replace(/<img[^>]*>/g, '').replace(/<\/?p>/g, '')}</PostArticle>
             {
               post.tags && post.tags.length > 0
               ?
@@ -118,7 +118,7 @@ const PostTitle = styled.p`
   margin-top: 1rem;
 `
 
-const Post = styled(PostTitle)`
+const PostArticle = styled(PostTitle)`
   font-size: 1.2rem;
   font-weight: 400;
   margin: 7px 0;
