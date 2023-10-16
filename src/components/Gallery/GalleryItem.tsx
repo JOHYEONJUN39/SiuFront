@@ -1,5 +1,6 @@
 import DOMPurify from "dompurify";
 import { styled } from "styled-components"
+import { articleToThumbnail } from "../../hooks/articleToThumbnail";
 
 type Post = {
   article: string;
@@ -19,7 +20,7 @@ const GalleryItem = ({content} : {content : Post}) => {
   return (
     <GalleryItems>
       <GalleryItemImageCon>
-        <GalleryItemImage src="https://resize.blogsys.jp/c3cd8a2c434824d88dc3a9b1397c7954d3ff3857/crop1/343x343/https://livedoor.blogimg.jp/shibainu_donguri/imgs/a/8/a875be26.png" alt="" />
+        <GalleryItemImage src={articleToThumbnail(content.article)} alt="" />
       </GalleryItemImageCon>
       <GalleryItemTitle 
         dangerouslySetInnerHTML={{
