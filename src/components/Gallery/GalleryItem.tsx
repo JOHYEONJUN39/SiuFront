@@ -1,6 +1,7 @@
 import DOMPurify from "dompurify";
 import { styled } from "styled-components"
 import { articleToThumbnail } from "../../hooks/articleToThumbnail";
+import { useNavigate } from "react-router-dom";
 
 type Post = {
   article: string;
@@ -14,11 +15,17 @@ type Post = {
 };
 
 const GalleryItem = ({content} : {content : Post}) => {
+  const navigate = useNavigate();
   const article = content.article;
   const displayedTitleText = article.length > 50 ? `${article.substring(0,50)}...` : article;
   
+  const navigatePost = () => {
+    navigate(`/posts/${content.id}`);
+  }
+  
+
   return (
-    <GalleryItems>
+    <GalleryItems onClick={navigatePost}>
       <GalleryItemImageCon>
         <GalleryItemImage src={articleToThumbnail(content.article)} alt="" />
       </GalleryItemImageCon>
