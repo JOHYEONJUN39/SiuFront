@@ -25,11 +25,27 @@ const WritePage = () => {
     input.setAttribute("accept", "image/*");
     input.click();
     input.addEventListener("change", async () => {
+<<<<<<< HEAD
+      //이미지를 담아 전송할 file을 만든다
+=======
       // イメージを入れて送信するfileを作る
+>>>>>>> upstream/develop
       const formData = {
         image: input.files?.[0],
       }
       try {
+<<<<<<< HEAD
+        // 이미지 업로드 요청
+        const IMG_URL = await GetImagePath(formData);
+        console.log(IMG_URL);
+        //useRef를 사용해 에디터에 접근한 후
+        //에디터의 현재 커서 위치에 이미지 삽입
+        const editor = quillRef.current?.getEditor();
+        const range = editor?.getSelection();
+        // 가져온 위치에 이미지를 삽입한다
+        if (range)
+        editor?.insertEmbed(range.index, "image", IMG_URL.data.image_path);
+=======
         // イメージアップロードリクエスト
         const res = await GetImagePath(formData);
         const IMG_URL = res.data.image_path;
@@ -38,6 +54,7 @@ const WritePage = () => {
         const range = editor?.getSelection();
         if (range)
           editor?.insertEmbed(range.index, "image", IMG_URL);
+>>>>>>> upstream/develop
       } catch (error) {
         console.log(error);
       }

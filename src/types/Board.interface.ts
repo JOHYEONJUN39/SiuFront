@@ -18,6 +18,8 @@ export interface Comment {
   created_at: Date;
   updated_at: Date;
   user: User;
+  liked: boolean;
+  like_count: number;
 }
 
 export interface Tags {

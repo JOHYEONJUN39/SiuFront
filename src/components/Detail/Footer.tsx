@@ -6,6 +6,8 @@ import { useMutation, useQueryClient } from "react-query";
 import { WriteComment } from "../../types/Write.interface";
 import { postComment } from "../../api/Comment/comment";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { showOpen } from "../../store/modalSlice";
 
 interface Props {
   postId: number;
@@ -18,6 +20,7 @@ const Footer = ({ postId, userId, comments }: Props) => {
   const [commentOpen, setCommentOpen] = useState(false);
 
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
   const onChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
@@ -44,6 +47,12 @@ const Footer = ({ postId, userId, comments }: Props) => {
     };
 
     writeMutate.mutate(data);
+  };
+
+  const onClickComment = () => {
+    if (userId === "") {
+      dispatch(showOpen({ modalType: "login" }));
+    }
   };
 
   return (
@@ -76,6 +85,7 @@ const Footer = ({ postId, userId, comments }: Props) => {
               placeholder="댓글을 입력해주세요"
               value={comment}
               onChange={onChangeComment}
+              onClick={onClickComment}
               name="comment"
             />
           </CommentInput>

@@ -11,8 +11,12 @@ import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { useLogin } from "../../api/Sign/Login";
 import { toast } from "react-toastify";
+<<<<<<< HEAD
+import { removeCookie } from "../../Cookie";
+=======
 import { removeCookie } from "../../hooks/useCookie";
 import ThemeToggle from "./ThemeToggle";
+>>>>>>> upstream/develop
 
 const Nav = () => {
   const [detailePage, setDetailePage] = useState<boolean>(false);
@@ -79,9 +83,7 @@ const Nav = () => {
                   <User>
                     <UserImg src={userData.photo} alt="userImg" />
                     <UserMenu>
-                      <UserMenuList
-                        onClick={() => navigate(`/profile`)}
-                      >
+                      <UserMenuList onClick={() => navigate(`/profile`)}>
                         Profile
                       </UserMenuList>
                       <UserMenuList onClick={handleLogOut}>Logout</UserMenuList>

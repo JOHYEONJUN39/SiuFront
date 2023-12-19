@@ -6,8 +6,13 @@ import { Post } from "../../types/PostData.interface";
 
 const GalleryItem = ({content} : {content : Post}) => {
   const navigate = useNavigate();
+<<<<<<< HEAD
+  const article = content.article;
+  const displayedTitleText = article.length > 50 ? `${article.substring(0,50)}...` : article;
+=======
   // const article = content.article;
   // const displayedTitleText = article.length > 50 ? `${article.substring(0,50)}...` : article;
+>>>>>>> upstream/develop
   
   const navigatePost = () => {
     navigate(`/posts/${content.id}`);
