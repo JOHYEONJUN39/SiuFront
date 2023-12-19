@@ -20,8 +20,12 @@ const ProfilePostPage = () => {
   useEffect(() => {
     GetPostUserId(`${userData.id}?page=${currentPage}`)
     .then(response => {
+<<<<<<< HEAD
       console.log(response);
       setPosts(response.data.data.reverse());
+=======
+      setPosts(response.data.data);
+>>>>>>> upstream/develop
       setPages(response.data);
     })
     }
@@ -100,11 +104,13 @@ const PostCon = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  
   margin-bottom: 4rem;
-  background-color: #F8F9FA;
   padding : 1rem;
+<<<<<<< HEAD
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+=======
+  box-shadow: ${({ theme }) => theme.postShadow};
+>>>>>>> upstream/develop
   div {
     img {
       width: 100%;

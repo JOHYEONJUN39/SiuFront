@@ -243,11 +243,10 @@ const TagBox = styled.div`
 const Body = styled.div`
   margin-top: 400px;
   position: relative;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.body};
   height: 500vh;
   margin-bottom: 60px;
   padding-top: 1rem;
-
   @media (max-width: 700px) {
     width: 700px;
   }
@@ -257,7 +256,7 @@ const Article = styled.div`
   width: 700px;
   text-align: left;
   margin: 0 auto;
-  background: #fff;
+  background: ${({ theme }) => theme.body};
   overflow: hidden;
   position: relative;
   z-index: 10;
