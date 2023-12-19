@@ -7,7 +7,7 @@ const Profile = () => {
   return (
     <ProfileContainer>
       <ProfileImageCon>
-        <ProfileImage src={userData.photo} alt="" />
+        <ProfileImage src={userData.photo} alt="profileImage" />
       </ProfileImageCon>
       <ProfileInfoCon>
         <ProfileInfo>

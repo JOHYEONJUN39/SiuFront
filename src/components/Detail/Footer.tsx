@@ -115,7 +115,6 @@ const CommentButton = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #000;
   border: 1px solid #a4a4a4;
   border-radius: 42px;
 

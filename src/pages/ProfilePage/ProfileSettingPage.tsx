@@ -22,7 +22,6 @@ const ProfileSettingPage = () => {
   
   const handleInputChange = (e : React.ChangeEvent<HTMLInputElement>) => {
     setNicknameValue(e.target.value);
-    console.log(nicknameValue);
   };
 
   const handleChangeClick = () => {
@@ -46,11 +45,8 @@ const ProfileSettingPage = () => {
     }
     
     UpdateProfile(formData)
-    .then(response => {
-      console.log(response);
-      dispatch(updateNickname(nicknameValue));
-      dispatch(updatePhoto(profileImage));
-    })
+    dispatch(updateNickname(nicknameValue));
+    dispatch(updatePhoto(profileImage));
     
     // 업로드했던 이미지들 삭제
   };
@@ -70,7 +66,6 @@ const ProfileSettingPage = () => {
     // axios로 서버로 보내기 (예정)
     GetImage(formData)
       .then(response => {
-        console.log(response);
         setProfileImage(response.data.profile_image);
       })
 
@@ -96,10 +91,7 @@ const ProfileSettingPage = () => {
     }
   
     DeleteImg(formData)
-    .then(response => {
-      console.log(response);
-      setProfileImage("https://cdn-icons-png.flaticon.com/512/3985/3985429.png");
-    })
+    setProfileImage("https://cdn-icons-png.flaticon.com/512/3985/3985429.png");
     
   }
 

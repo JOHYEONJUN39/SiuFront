@@ -6,11 +6,13 @@ import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE} from "redux-persist"
 import persistStore from "redux-persist/es/persistStore";
 import persistReducer from "redux-persist/es/persistReducer";
 import headerSlice from "./headerSlice";
+import themeSlice from "./themeSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
   modal: modalReducer,
   header: headerSlice,
+  theme: themeSlice,
 })
 
 const persistConfig = {

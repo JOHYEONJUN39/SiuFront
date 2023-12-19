@@ -12,6 +12,7 @@ import { useMutation } from "react-query";
 import { useLogin } from "../../api/Sign/Login";
 import { toast } from "react-toastify";
 import { removeCookie } from "../../hooks/useCookie";
+import ThemeToggle from "./ThemeToggle";
 
 const Nav = () => {
   const [detailePage, setDetailePage] = useState<boolean>(false);
@@ -66,10 +67,10 @@ const Nav = () => {
         <HeaderInner>
           <HeaderWrapper>
             <HeaderTitle onClick={() => navigate("/")}>BlogHub</HeaderTitle>
-
             <SearchInput />
-
+  
             <HeaderRight>
+              <ThemeToggle />
               {userData.id ? (
                 <>
                   <WriteButton onClick={() => navigate("/write")}>
@@ -211,6 +212,7 @@ const UserMenu = styled.div`
   top: 60px;
   right: 20px;
   width: 150px;
+  color: #000;
   background-color: #fff;
   border: 1px solid #eee;
   border-radius: 0.5rem;

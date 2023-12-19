@@ -1,4 +1,4 @@
-import DOMPurify from "dompurify";
+// import DOMPurify from "dompurify";
 import { styled } from "styled-components"
 import { articleToThumbnail } from "../../hooks/articleToThumbnail";
 import { useNavigate } from "react-router-dom";
@@ -6,8 +6,8 @@ import { Post } from "../../types/PostData.interface";
 
 const GalleryItem = ({content} : {content : Post}) => {
   const navigate = useNavigate();
-  const article = content.article;
-  const displayedTitleText = article.length > 50 ? `${article.substring(0,50)}...` : article;
+  // const article = content.article;
+  // const displayedTitleText = article.length > 50 ? `${article.substring(0,50)}...` : article;
   
   const navigatePost = () => {
     navigate(`/posts/${content.id}`);
@@ -19,10 +19,7 @@ const GalleryItem = ({content} : {content : Post}) => {
       <GalleryItemImageCon>
         <GalleryItemImage src={articleToThumbnail(content.article)} alt="" />
       </GalleryItemImageCon>
-      <GalleryItemTitle 
-        dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(displayedTitleText || '').replace(/<\/?p>/g, ''),
-        }} />
+      <GalleryItemTitle>{content.title}</GalleryItemTitle> 
     </GalleryItems>
   )
 }
@@ -67,11 +64,11 @@ const GalleryItems = styled.div`
   }
   cursor: pointer;
   transition: box-shadow 0.2s ease-in-out;
-  box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: ${({ theme }) => theme.itemShadow};
   &:hover {
-    box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: ${({ theme }) => theme.itemHoverShadow};
     & ${GalleryItemTitle} {
-      background-color: #E5F5FF;
+      background-color: ${({ theme }) => theme.itemHover};
     }
-  } 
+  }
 `
