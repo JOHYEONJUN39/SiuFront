@@ -20,7 +20,7 @@ const LNB = ({pages, activePage, setActivePage} : props) => {
             className={activePage === page.key ? "active" : ""}
             onClick={() => handleClick(page.key)}
           >
-            <p>{page.key}</p>
+            <NavText>{page.key}</NavText>
           </NavigationMenuButton>
         </NavigationMenu>
       ))}
@@ -49,16 +49,17 @@ const NavigationMenuButton = styled.button`
   height: 100%;
   background-color: transparent;
   border: none;
-  display: block;
   font-size: 1.5rem;
-  color: #000;
   border-bottom: 2px solid transparent;
   &:hover {
     cursor: pointer;
   }
-
   &.active {
-    color: black;
     border-bottom: 2px solid red;
   }
 `;
+
+const NavText = styled.p`
+  font-size: 1.5rem;
+  color: ${({ theme }) => theme.text};
+`
