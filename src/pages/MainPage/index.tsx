@@ -3,9 +3,9 @@ import Galleries from "../../components/Gallery/Galleries";
 import TopButton from "../../components/TopButton";
 
 const tagName = [
-  "테스트",
-  "여행",
-  "엄준식"
+  "旅行",
+  "料理",
+  "趣味"
 ]
 
 const MainPage = () => {
@@ -25,5 +25,5 @@ const MainPage = () => {
 export default MainPage
 
 const Con = styled.div`
-  height: 1000vh;
+  height: 200vh;
 `
