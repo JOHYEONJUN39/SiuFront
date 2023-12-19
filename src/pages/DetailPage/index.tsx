@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { DeletePost, GetPost } from "../../api/Board/Post";
 import styled from "styled-components";
 import DOMPurify from "dompurify";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { showOpen } from "../../store/headerSlice";
 import { showClose } from "../../store/headerSlice";
@@ -14,8 +14,11 @@ import Nav from "../../components/Layout/Nav";
 import { useTimeStamp } from "../../hooks/useTimeStamp";
 import TagUI from "../../components/common/TagUI";
 import Footer from "../../components/Detail/Footer";
+import { articleToThumbnail } from "../../hooks/articleToThumbnail";
 
 const DetailPage = () => {
+  const [image, setImage] = useState<string>("");
+
   // 주소창에서 /:postId 부분을 가져온다
   const { postId } = useParams();
   const dispatch = useDispatch();
@@ -27,6 +30,9 @@ const DetailPage = () => {
     {
       enabled: !!postId,
       refetchOnWindowFocus: false,
+      onSuccess(data) {
+        setImage(articleToThumbnail(data.post.article));
+      },
       onError: () => {
         navigate("/404");
       },
@@ -85,7 +91,7 @@ const DetailPage = () => {
       <Container>
         <Header>
           <HeaderWrapper>
-            <HeaderImage />
+            <HeaderImage $image={image} />
             <HeaderInner />
             <Title>
               <TitleText>{data?.post.title}</TitleText>
@@ -156,8 +162,10 @@ const HeaderWrapper = styled.div`
   overflow: hidden;
 `;
 
-const HeaderImage = styled.div`
-  background-image: url("https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg");
+const HeaderImage = styled.div<{ $image: string }>`
+  background-image: url(${(props) => props.$image});
+  background-size: cover;
+  background-position: center;
   height: 450px;
 `;
 
