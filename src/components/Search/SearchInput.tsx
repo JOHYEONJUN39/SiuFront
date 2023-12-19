@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { GetTagList } from '../../api/Search/Search';
-import { useQuery } from 'react-query';
-import { HashLoader } from 'react-spinners';
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { GetTagList } from "../../api/Search/Search";
+import { useQuery } from "react-query";
+import { HashLoader } from "react-spinners";
 
 const SearchInput = () => {
   const [tagSearch, setTagSearch] = useState<boolean>(false);
@@ -14,38 +14,38 @@ const SearchInput = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const query = new URLSearchParams(useLocation().search)
-  const searchQuery = query.get('query')
+  const query = new URLSearchParams(useLocation().search);
+  const searchQuery = query.get("query");
 
   // input 창 벗어나면 검색 결과 숨기기
   const handleBlur = () => {
     setTimeout(() => {
-      setTagSearch(false)
-      setFocus(false)
-      setTagResult([])
+      setTagSearch(false);
+      setFocus(false);
+      setTagResult([]);
     }, 100);
-  }
+  };
 
   // 검색창 초기화
   useEffect(() => {
-    if(location.pathname !== "/search") {
-      setSearchValue("")
-      setTagResult([])
+    if (location.pathname !== "/search") {
+      setSearchValue("");
+      setTagResult([]);
     }
-  }, [location])
+  }, [location]);
 
   useEffect(() => {
-    if(searchQuery) {
-      setSearchValue(searchQuery)
+    if (searchQuery) {
+      setSearchValue(searchQuery);
     }
-  }, [searchQuery])
+  }, [searchQuery]);
 
   // 검색 했을 때 검색 페이지로 이동
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     // 검색창 다 지우면 메인 페이지로 이동
     if (e.target.value === "") {
-      navigate("/")
-      setTagSearch(false)
+      navigate("/");
+      setTagSearch(false);
       return;
     }
 
@@ -55,73 +55,84 @@ const SearchInput = () => {
       return;
     }
 
-    setSearchValue(e.target.value)
-    navigate(`/search?query=${e.target.value}`)
-  }
+    setSearchValue(e.target.value);
+    if (location.pathname === "/search") {
+      navigate(`/search?query=${e.target.value}`);
+    } else {
+      setTimeout(() => {
+        navigate(`/search?query=${e.target.value}`);
+      }, 1000);
+    }
+  };
 
   // 태그 검색
-  const { isLoading } = useQuery(['tag', searchValue], async () => {
-    setTagResult([]);
-    setTagSearch(true);
-    const data = await GetTagList(searchValue);
-    return data;
-  }, {
-    onSuccess: (data) => {
-      setTagResult(data);
+  const { isLoading } = useQuery(
+    ["tag", searchValue],
+    async () => {
+      setTagResult([]);
+      setTagSearch(true);
+      const data = await GetTagList(searchValue);
+      return data;
     },
-    onError: () => {
-      setTagSearch(false);
-    },
-    cacheTime: 0,
-    enabled: searchValue.startsWith("#") && searchValue.length > 1 && focus
-  });
+    {
+      onSuccess: (data) => {
+        setTagResult(data);
+      },
+      onError: () => {
+        setTagSearch(false);
+      },
+      cacheTime: 0,
+      enabled: searchValue.startsWith("#") && searchValue.length > 1 && focus,
+    }
+  );
 
   // url 인코딩
-  function replace(url: string) {     
-    url= encodeURIComponent(url);    
+  function replace(url: string) {
+    url = encodeURIComponent(url);
     return url;
   }
 
   // 태그 클릭 시 검색
   const tagClick = (item: string) => {
-    setSearchValue(item)
-    setTagSearch(false)
-    const itemResult = replace(item)
-    navigate(`/search?query=${itemResult}`)
-  }
+    setSearchValue(item);
+    setTagSearch(false);
+    const itemResult = replace(item);
+    navigate(`/search?query=${itemResult}`);
+  };
 
   return (
     <InputBox>
       <HeaderInput
         value={searchValue}
         onChange={handleSearch}
-        type="text" 
+        type="text"
         placeholder="Search"
         onFocus={() => setFocus(true)}
         onBlur={handleBlur}
       />
       <TagSearchBox $tagSearch={tagSearch}>
-        {
-          tagResult.map((item, index) => {
-            return (
-              <TagResult key={index} 
-                onClick={() => tagClick(item)}
-              >
-                {item}
-              </TagResult>
-            )
-          })
-        }
-        <HashLoader color="#36d7b7" loading={isLoading} size={20} cssOverride={{margin: '0 auto'}} />
+        {tagResult.map((item, index) => {
+          return (
+            <TagResult key={index} onClick={() => tagClick(item)}>
+              {item}
+            </TagResult>
+          );
+        })}
+        <HashLoader
+          color="#36d7b7"
+          loading={isLoading}
+          size={20}
+          cssOverride={{ margin: "0 auto" }}
+        />
       </TagSearchBox>
     </InputBox>
-  )
-}
+  );
+};
 
-export default SearchInput
+export default SearchInput;
 
-const TagSearchBox = styled.div<{$tagSearch: boolean}>`
-  display: ${({$tagSearch}) => $tagSearch ? "block" : "none"};
+const TagSearchBox = styled.div<{ $tagSearch: boolean }>`
+  display: ${({ $tagSearch }) => ($tagSearch ? "block" : "none")};
   position: absolute;
   top: 50px;
   margin: 0 auto;
@@ -133,7 +144,7 @@ const TagSearchBox = styled.div<{$tagSearch: boolean}>`
   border-radius: 0.5rem;
   padding: 1rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-`
+`;
 
 const TagResult = styled.div`
   height: 50px;
@@ -145,14 +156,14 @@ const TagResult = styled.div`
   &:hover {
     background-color: #eee;
   }
-`
+`;
 
 const InputBox = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
 
 const HeaderInput = styled.input`
   width: 300px;
@@ -169,4 +180,8 @@ const HeaderInput = styled.input`
   &:focus {
     outline: none;
   }
-`
+
+  @media (max-width: 700px) {
+    width: 200px;
+  }
+`;

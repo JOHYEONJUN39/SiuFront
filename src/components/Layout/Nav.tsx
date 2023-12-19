@@ -11,12 +11,7 @@ import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { useLogin } from "../../api/Sign/Login";
 import { toast } from "react-toastify";
-<<<<<<< HEAD
-import { removeCookie } from "../../Cookie";
-=======
-import { removeCookie } from "../../hooks/useCookie";
 import ThemeToggle from "./ThemeToggle";
->>>>>>> upstream/develop
 
 const Nav = () => {
   const [detailePage, setDetailePage] = useState<boolean>(false);
@@ -43,7 +38,6 @@ const Nav = () => {
   const logoutMutation = useMutation(() => logout(), {
     onSuccess: () => {
       dispatch(resetUser());
-      removeCookie("XSRF-TOKEN");
       navigate("/");
       toast.success("로그아웃 되었습니다");
     },
@@ -72,7 +66,7 @@ const Nav = () => {
           <HeaderWrapper>
             <HeaderTitle onClick={() => navigate("/")}>BlogHub</HeaderTitle>
             <SearchInput />
-  
+
             <HeaderRight>
               <ThemeToggle />
               {userData.id ? (
@@ -122,7 +116,8 @@ const Header = styled.header<{ $detailePage: boolean; $show: boolean }>`
       ? "none"
       : "url(https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg)"};
   background-position: center;
-  position: sticky;
+  position: ${({ $detailePage, $show }) =>
+    $detailePage && $show ? "sticky" : $detailePage ? "relative" : "sticky"};
   top: 0;
   z-index: 999;
   transition: all 0.2s ease-out;
